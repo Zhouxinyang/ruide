@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<include file="_layout/mall.head.html" title="订单结算" />
+<style>
+.select-express{position:relative; font-size:12px}
+.select-express select{opacity:0;position:absolute;width:100%;height:100%;left:0;right:0;top:0;bottom:0;}
+.select-express.error{color:red}
+.select-express .express_name{color:#ddd}
+.arrow{line-height:20px;margin-right: 10px}
+.arrow:after{content:'';position:absolute;width:7px;height:7px;border-top:2px solid #cbc9cc;border-right:2px solid #cbc9cc;-webkit-transform:rotate(45deg);-moz-transform:rotate(45deg);-ms-transform:rotate(45deg);transform:rotate(45deg);top:15px;right:12px}
+</style>
+</head>
+<body>
+	<div class="container js-page-content wap-page-order">
+		<div class="content confirm-container">
+			<div style="background: #ff7e00;background-size: auto 100%;position: static;padding: 20px;color: #fff;">
+				<div>
+					<h3>提示</h3>
+					<p style="font-size: 12px;margin-top: 5px;line-height:15px;">
+					<php>echo empty($error_msg) ? '待支付订单'.(C('ORDER_TIME_OUT')/3600).'小时后自动取消<br>付款后减库存，先付先得' : $error_msg</php>
+					</p>
+				</div>
+			</div>
+			<div class="block express" id="js-logistics-container" style="margin-top: -1px;">
+				<div class="js-logistics-content logistics-content js-express">
+					<div class="block form border-top-0 border-bottom-0">
+						<div class="js-edit-address js-order-address express-panel express-panel-edit empty-address" style="padding-left: 0;">
+							<ul class="express-detail">
+								<li>添加收货地址</li>
+							</ul>
+						</div>
+					</div>
+					<div class="js-logistics-tips logistics-tips font-size-12 c-orange hide">很抱歉，该地区暂不支持配送。</div>
+				</div>
+				<!-- <div class="js-logistics-content logistics-content js-self-fetch"></div> -->
+			</div>
+			<!-- 商品列表 -->
+			<div class="js-goods-list-container">
+			<foreach name="groups" key="seller_id" item="group">
+			<div class="block block-list block-order" data-seller_id="{$seller_id}">
+				<div class="header" style="padding-left: 0px;">
+					<span>店铺：{$group['seller_nick']}</span>
+				</div>
+				<foreach name="group['trades']" key="freight_tid" item="trade">
+				<div class="trade-item" data-freight_tid="{$freight_tid}">
+					<foreach name="trade['orders']" item="product">
+					<a href="/h5/goods?id={$product.goods_id}" class="js-goods-item block-item name-card name-card-3col name-card-goods clearfix">
+						<div class="thumb"><img src="{$product.pic_url}"></div>
+						<div class="detail">
+							<h3 class="l2-ellipsis">{$product.title}</h3>
+							<p class="c-gray ellipsis">{$product.spec}</p>
+							<p class="js-error c-orange ellipsis">{$product.error_msg}</p>
+						</div>
+						<div class="right-col">
+							<div class="price" id="product-{$product.product_id}">¥<span>{$product.discount_price}</span></div>
+							<div class="num">×<span class="num-txt">{$product.num}</span></div>
+						</div>
+						<div class="goods-action"></div>
+					</a>
+					</foreach>
+					<div id="discount-{$seller_id}-{$freight_tid}" class="block-item font-size-12 js-discount">
+						<span>店铺优惠</span>
+						<div class="pull-right arrow">¥0.00</div>
+					</div>
+                    <div id="express-{$seller_id}-{$freight_tid}" class="js-select-express block-item select-express">
+                        <span>配送方式</span>
+                        <div class="pull-right arrow" data-freight_tid="{$trade['freight_tid']}">请选择</div>
+                        <select><option value="">请添加收货地址</option></select>
+                    </div>
+					<div class="block-item order-message clearfix js-order-message" data-type="msg">
+						<textarea id="remark-{$seller_id}-{$freight_tid}" class="js-msg-container font-size-12" placeholder="给卖家留言..."></textarea>
+					</div>
+				</div>
+				</foreach>
+				<div class="block-item">
+					合计<div class="pull-right"><span class="c-orange" id="seller-{$seller_id}-total">¥0.00</span></div>
+				</div>
+			</div>
+			</foreach>
+			</div>
+			<div class="js-order-total block border-top-0">
+				<div class="block-item order-total">
+					<p>
+						<span>商品总价</span>
+						<span class="pull-right">¥0.00</span>
+					</p>
+					<p>
+						<span>运费(快递)</span>
+						<span class="pull-right">+ ¥0.00</span>
+					</p>
+					<p>
+						<span>店铺优惠</span>
+						<span class="pull-right">- ¥0.00</span>
+					</p>
+					<p>
+						<span>积分抵用</span>
+						<span class="pull-right">- ¥0.00</span>
+					</p>
+				</div>
+				<div class="block-item">
+					<p>
+						<span>应付金额</span>
+						<span class="pull-right c-orange">¥0.00</span>
+					</p>
+				</div>
+			</div>
+			
+			<empty name="has_error">
+			<!-- 支付 -->
+			<div class="action-container" id="confirm-pay-way-opts">
+				<div style="margin-bottom: 10px;">
+					<p class="center c-gray-dark font-size-12" style="line-height:30px;">使用微信支付请确保已安装微信6.0.2以上版本</p>
+					<button type="button" class="btn-pay btn btn-block btn-large btn-wxwappay btn-green">
+						微信支付
+					</button>
+				</div>
+			</div>
+			</empty>
+		</div>
+	</div>
+	
+	<script type="text/javascript">
+	var _data = {$json_data};
+	requirejs(['pay-confirm']);
+	</script>
+</body>
+</html>

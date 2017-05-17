@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+	<include file="_layout/mall.head.html" />
+</head>
+<body>
+	<script>
+	require(['login_modal'], function(modal){
+		modal.init({appid: '{$appid}', redirect: '{$redirect}', mobile: '{$mobile}'});
+	});
+	
+	window.uexOnload = function(type){  
+		uexWindow.setReportKey(0,1);  
+		uexWindow.onKeyPressed = function(){   
+			uexWidgetOne.exit();  
+		};  
+	} 
+	</script>
+</body>
+</html>

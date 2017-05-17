@@ -1,0 +1,39 @@
+<link rel="stylesheet" type="text/css" href="/css/appmsg.css">
+<script src="/js/pagination.js"></script>
+
+<div id="pic_list">
+</div>
+<script>
+$(function(){
+	 $('#page').val(1);
+	 var data = $(this).serializeArray();
+	 data.push({name: 'page', value: 1});
+	 getList(data);
+	 return false;
+})
+
+//获取高级图文列表
+function getList(data){
+	$.ajax({
+		url: '__ACTION__',
+		data: data,
+		success: function(html){
+			$("#pic_list").html(html);
+			
+			var $pagination = $('#pagination');
+			var page = $pagination.attr('data-page');
+			$('#pagination').pagination({
+				itemsCount: $pagination.attr('data-total'),
+			    pageSize: 20,
+			    displayPage: 20,
+			    currentPage: page,
+			    showCtrl: true,
+			    onSelect: function (page) {
+			    	data[data.length - 1].value = page;
+			    	getList(data);
+			    }        
+			})
+		}
+	});
+}
+</script>

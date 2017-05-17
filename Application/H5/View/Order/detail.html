@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<include file="_layout/mall.head.html" />
+</head>
+<body class="body-fixed-bottom">
+	<div class="container js-page-content wap-page-order">
+		<div class="content confirm-container">
+			<div class="seller-state  " style="background:#ff7e00 /*url(/img/order/{$trade.status}.png)no-repeat 90% center*/;background-size: auto 100%;position: static;padding: 20px;color: #fff;">
+				<div class="state-cont">
+					<h3 class="h">订单状态</h3>
+					<p class="sub" style="font-size: 12px;margin-top: 5px;">{$trade.status_str}</p>
+				</div>
+			</div>
+			<div class="block express" style="margin-top: -1px;">
+				<div class="block form" style="margin-top: -1px;">
+                	<div class="express-panel" style="padding: 10px 0;">
+				        <ul class="express-detail">
+				            <li class="clearfix">
+				                <span class="name">收货人：{$trade.receiver_name}</span><span class="tel">{$trade.receiver_mobile}</span>
+				            </li>
+				            <li class="address-detail">收货地址：{$trade.receiver_province}{$trade.receiver_city}{$trade.receiver_county}{$trade.receiver_detail}</li>
+				        </ul>
+				    </div>
+            	</div>
+			</div>
+			<div class="js-order-detail">
+				<!-- 商品列表 -->
+				<div class="js-goods-list-container block block-list block-order ">
+					<div class="header" style="padding-left: 0px;">
+						<span>店铺：{$trade.seller_nick}</span>
+					</div>
+					<div class="js-goods-list">
+						<foreach name="trade['orders']" item="product" key="i">
+						<a href="/h5/goods?id={$product.goods_id}" class="js-goods-item block-item name-card name-card-3col name-card-goods clearfix">
+	            			<div class="thumb"><img src="{$product.pic_url}"></div>
+	        				<div class="detail">
+	    						<h3 class="l2-ellipsis">{$product.title}</h3>
+	    						<p class="c-gray ellipsis">{$product.spec}</p>
+							</div>
+					        <div class="right-col">
+					        	<div class="price">¥<span>{$product.price}</span></div>
+					            <div class="num">×<span class="num-txt">{$product.num}</span></div>
+					        </div>
+					        <div class="goods-action">
+					        	<php>
+					        	if(!empty($product['refund_id'])){
+					        		echo '<span class="tag tag-red tag-opt js-refund" data-oid="'.$product['oid'].'">'.$product['refund_state_str'].'</span>';
+					        	}else if($product['can_refund']){
+					        		echo '<span class="tag tag-red tag-opt js-refund" data-oid="'.$product['oid'].'">申请退款</span>';
+					        	}
+					        	</php>
+							</div>
+	      				</a>
+						</foreach>
+						<php>$express_count = count($trade['express']);
+						if($express_count <= 1){
+							if(empty($trade['express'])){</php>
+							<div class="block-item font-size-12" style="padding-left: 0px;">
+						    	配送方式：<span class="pull-right"><span class="express_name">{$trade['express_name']}</span>¥{$trade.post_fee}</span>
+		         			</div>
+							<php>}else{</php>
+							<a class="block-item font-size-12" style="padding-left: 0px;" href="http://m.kuaidi100.com/result.jsp?nu={$trade['express'][0]['no']}" target="_blank">
+						    	<p class="has-express-no">{$trade['express'][0]['name']}：{$trade['express'][0]['no']}<span class="pull-right">¥{$trade.post_fee}</span></p>
+		         			</a>
+							<php>}
+						}else{	
+						</php>
+						<table class="express-table">
+  							<tbody>
+  								<tr>
+    								<td rowspan="{:$express_count+1}" class="title">配送方式</td>
+									<td class="block-item desc">共有{$express_count}个包裹信息，¥{$trade.post_fee}</td>
+								</tr>
+								<foreach name="trade['express']" item="item">
+								<tr>
+    								<td>
+    									<a class="block-item font-size-12" href="http://m.kuaidi100.com/result.jsp?nu={$item['no']}" target="_blank">
+					        				<p class="has-express-no">{$item['name']}<span class="pull-right">{$item['no']}</span></p>
+	         							</a>
+	         						</td>
+  								</tr>
+								</foreach>
+							</tbody>
+						</table>
+						<php>}</php>
+					</div>
+					<neq name="trade['buyer_remark']" value="">
+					<div class="block-item order-message">
+				    	<span class="font-size-12">买家留言：</span><p class="message-content font-size-12">{$trade['buyer_remark']}</p>
+				    </div>
+				    </neq>
+					<div class="block-item" style="line-height: 1.2;">
+						合计
+						<div class="pull-right">
+							<span class="c-orange">¥{:sprintf('%.2f', $trade['total_fee']+$trade['post_fee'])}</span>
+						</div>
+					</div>
+				</div>
+			
+				<div class="block border-top-0">
+					<div style="display: flex;text-align: center;border-top: 1px solid #e5e5e5;">
+					  <a class="js-lxkf online-kefu" href="javascript:;" data-shop="{$trade.seller_id}">在线客服</a>
+					  <a href="tel:{:C('KEFU.FOUR_ZERO_ZERO')}" class="online-tel">售后电话</a>
+					</div>
+	        	</div>
+
+				<div class="js-order-total block border-top-0">
+					<div class="block-item order-total">
+						<p>
+							<span>商品总价</span><span class="pull-right">¥{$trade['total_fee']}</span>
+						</p>
+						<p>
+							<span>运费(快递)</span><span class="pull-right">+ ¥{$trade['post_fee']}</span>
+						</p>
+						<p>
+							<span>店铺优惠</span><span class="pull-right">- ¥{$trade['discount_fee']}</span>
+						</p>
+						<p>
+							<span>积分抵用</span><span class="pull-right">- ¥{:bcadd($trade['paid_balance'], $trade['paid_no_balance'], 2)}</span>
+						</p>
+					</div>
+					<div class="block-item">
+						<p>
+							<span>应付金额</span><span class="pull-right c-orange">¥{$trade['payment']}</span>
+						</p>
+					</div>
+				</div>
+	        	
+	        	<div class="block" style="background-color: #fff;padding:20px 10px;line-height:22px;font-size:12px;color:#999;">
+	            	<p>订单编号：{$trade['tid']}</p>
+	               	<p>创建时间：{$trade['created']}</p>
+	               	<notempty name="trade['pay_time']">
+	               	<p>支付时间：{$trade['pay_time']}</p>
+	               	<notempty name="trade['trade_no']">
+	               	<p>支付流水：{$trade['trade_no']}</p>
+	               	</notempty>
+	               	<if condition="$trade['refunded_fee'] gt 0">
+	               	<p>累计退款：{$trade['refunded_fee']}元</p>
+	               	</if>
+	               	</notempty>
+	               	<notempty name="trade['consign_time']">
+	               	<p>发货时间：{$trade['consign_time']}</p>
+	               	</notempty>
+	               	<notempty name="trade['end_time']">
+	               	<p>成交时间：{$trade['end_time']}</p>
+	               	</notempty>
+	        	</div>
+			</div>
+			<if condition="$trade['buyer_id'] == $login_id">
+	       	<div class="js-bottom-action">
+	               <div class="js-bottom bottom-fix">
+	                  <div class="js-button-action">
+	                   	<php>if($trade['status'] == 'send'){</php>
+						<span class="js-confirm-receive tag tag-big tag-orange pull-right" style="padding:0 6px;margin-right: 10px;">确认收货</span>
+	                   	<php>}else if($trade['status'] == 'success' || $trade['status'] == 'cancel'){</php>
+						<span class="js-del-order tag tag-big tag-orange pull-right" style="padding:0 6px;margin-right: 10px;">删除</span>
+						<php>}else{</php>
+						<span class="js-back tag tag-big tag-orange pull-right" style="padding:0 6px;margin-right: 10px;">返回</span>
+						<php>}</php>
+					</div>
+	        	</div>
+	        </div>
+	        </if>
+		</div>
+	</div>
+<style>
+.express-content{margin-top:10px}
+.express-content .block.block-order .header{padding-left: 0px;display:block}
+.express-content .header:after{content:'';position:absolute;width:7px;height:7px;border-top:2px solid#cbc9cc;border-right:2px solid#cbc9cc;-webkit-transform:rotate(45deg);-moz-transform:rotate(45deg);-ms-transform:rotate(45deg);transform:rotate(45deg);top:14px;right:12px}
+.express-content .header .pull-right{margin-right:16px}
+.express-table{width: 100%;border-top: 1px solid #e5e5e5;font-size: 12px;}
+.express-table .title{width: 15px;padding: 20px;border-right: 1px solid #F8F8F8;}
+.express-table .desc{text-align: center;border-top: none;}
+.express-table .block-item{border-color:#F8F8F8}
+.express_name{color:#999}
+.has-express-no{line-height:20px;margin-right: 10px}
+.has-express-no:after{content:'';position:absolute;width:7px;height:7px;border-top:2px solid #cbc9cc;border-right:2px solid #cbc9cc;-webkit-transform:rotate(45deg);-moz-transform:rotate(45deg);-ms-transform:rotate(45deg);transform:rotate(45deg);top:16px;right:12px}
+.online-kefu{flex: 1;height:35px;line-height:35px;border-right: 1px solid #e5e5e5;}
+.online-kefu:before{content:'';background:url('https://open.weixin.qq.com/zh_CN/htmledition/res/assets/res-design-download/icon32_wx_logo.png') no-repeat;width:18px;height:18px;display:inline-block;background-size:100%;margin-bottom:-5px;margin-right:3px;}
+.online-tel{flex: 1;height:35px;line-height:35px;}
+.online-tel:before{content:'';background:url('/img/mall/phone_aaaa.jpg') no-repeat;width:18px;height:18px;display:inline-block;background-size:100%;margin-bottom:-5px;margin-right:3px;}
+</style>
+</body>
+	<script type="text/javascript">
+	var tid = '{$trade.tid}';
+	require(["jquery"], function(){
+		$('.js-button-action')
+		.on('click', '.js-del-order', function(){
+			if(!confirm("确定删除订单吗？")){
+				return false;	
+			}
+			
+			$.ajax({
+				url: '/h5/order/delete',
+				dataType: 'json',
+				data: {tid: tid},
+				type: 'post',
+				success: function(){
+					window.history.back();
+				}
+			});
+		})
+		.on('click', '.js-confirm-receive', function(){
+			if(!confirm('确认收货吗？没有收到物品前请勿此操作')){
+				return false;
+			}
+			
+			$.ajax({
+				url: '/h5/order/sign',
+				dataType: 'json',
+				data: {tid: tid},
+				type: 'post',
+				success: function(){
+					window.location.reload();
+				}
+			});
+		})
+		.on('click', '.js-back', function(){
+			window.history.back();
+		});
+		
+		$('.js-refund').on('click', function(){
+			var oid = $(this).data('oid');
+			$.ajax({
+				url: '/h5/refund?oid='+oid,
+				waitting: true,
+				success: function(html){
+					$('body').append(html);
+				}
+			});
+			return false;
+		});
+	});
+	</script>
+</html>

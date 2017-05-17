@@ -1,0 +1,57 @@
+* { margin: 0px; padding: 0px; }
+body, html { font-family: "Microsoft YaHei"; }
+ul { list-style: none; }
+a { text-decoration: none; }
+body { background: #0c0c0c; }
+body #head img { width: 10rem; }
+body #search { height: 1.34615rem; width: 100%; overflow: hidden; background: #0c0c0c; }
+body #search #check_form { position: relative; margin-left: 0.88462rem; margin-top: 0.61538rem; overflow: hidden}
+body #search #check_form select { width: 1.82692rem; height: 0.56rem; background: #ffffff;float: left ;font-size: 12px }
+[data-dpr='2'] body #search #check_form select { font-size: 24px }
+[data-dpr='3'] body #search #check_form select { font-size: 36px }
+body #search #check_form input { width: 3.84615rem; height: 0.53846rem; float: left ;margin: 0 0.19231rem;border-radius: 0.1rem;border: none; font-size: 12px; }
+[data-dpr='2'] body #search #check_form input { font-size: 24px; }
+[data-dpr='3'] body #search #check_form input { font-size: 36px; }
+body #search #check_form button { width: 1.92308rem; height: 0.53846rem; font-size: 14px; text-align: center; color: #fff; background: #f11f1e; border: none; }
+[data-dpr='2'] body #search #check_form button { font-size: 28px; }
+[data-dpr='3'] body #search #check_form button { font-size: 42px; }
+body #search #check_form i { width: 0.46154rem; height: 0.46154rem; background-image: url("../img/ruide/search.png"); background-size: cover; display: block; position: absolute; top: 0.065rem; left: 5.35rem; }
+body #details{ display: none}
+body #details.show{display: block}
+body #details .userinfo { width: 8.84615rem; height: 0.53846rem; background: #f11f1e; margin: 0.23077rem auto 0; font-size: 8px; padding: 0 0.19231rem; color: #fff; }
+[data-dpr='2'] body #details .userinfo { font-size: 16px; }
+[data-dpr='3'] body #details .userinfo { font-size: 24px; }
+body #details .userinfo .name { width: 1.34615rem; height: 0.30769rem; margin-top: 0.07692rem; margin-right: 0.28846rem; }
+body #details .userinfo .wechat { width: 1.92308rem; height: 0.30769rem; margin-right: 0.28846rem; }
+body #details .userinfo .id { width: 1.92308rem; height: 0.30769rem; }
+body #details .content { width: 9.23077rem; margin: 0 auto; background: #FFFFFF; overflow: hidden; }
+body #details .content p { font-size: 12px; margin-left: 0.80769rem; margin-top: 0.15385rem; }
+[data-dpr='2'] body #details .content p { font-size: 24px; }
+[data-dpr='3'] body #details .content p { font-size: 36px; }
+body #details .content table { margin-left: 0.80769rem; border-collapse: collapse; margin-bottom: 0.34615rem; }
+body #details .content table th { font-size: 10px; text-align: center; padding-top: 0.05769rem; padding-bottom: 0.05769rem; }
+[data-dpr='2'] body #details .content table th { font-size: 20px; }
+[data-dpr='3'] body #details .content table th { font-size: 30px; }
+body #details .content table td { font-size: 12px; text-align: center; padding-top: 0.05769rem; padding-bottom: 0.05769rem; }
+[data-dpr='2'] body #details .content table td { font-size: 24px; }
+[data-dpr='3'] body #details .content table td { font-size: 36px; }
+body #details .content table td:nth-child(1) { width: 3.26923rem; }
+body #details .content table td:nth-child(2) { width: 3rem; }
+body #details .content table td:nth-child(3) { width: 3rem; }
+body #details .content table span { width: 1.44231rem; height: 0.28846rem; background: #f11f1e; border-radius: 0.09615rem; color: #fff; cursor: pointer;overflow: hidden }
+body #details .content table i { width: 0.23077rem; height: 0.23077rem; background-image: url("../img/ruide/search-2.png"); background-size: 100% 100%; display: inline-block;margin-top: 0.1rem }
+body #img_show{ width: 9.26963rem; height: 5rem; display: none; background: #000000; position: fixed;top: 30%;left: 3.6%}
+body #img_show.show{ display: block;}
+body #explain { color: #FFFFFF; overflow: hidden; }
+body #explain h4 { font-size: 16px; text-align: center; margin: 0.19231rem 0; }
+[data-dpr='2'] body #explain h4 { font-size: 32px; }
+[data-dpr='3'] body #explain h4 { font-size: 48px; }
+body #explain span { text-align: center; display: block; font-size: 14px; margin: 0 auto; width: 9.42308rem; padding-bottom: 0.26923rem; border-bottom: #f1f1f1 1px solid; }
+[data-dpr='2'] body #explain span { font-size: 28px; }
+[data-dpr='3'] body #explain span { font-size: 42px; }
+body #explain p { font-size: 12px; margin: 0.26923rem auto 0.57692rem; width: 9.23077rem; line-height: 0.28846rem; }
+[data-dpr='2'] body #explain p { font-size: 24px; }
+[data-dpr='3'] body #explain p { font-size: 36px; }
+body #foot { height: 4.23077rem; background-image: url("../img/ruide/foot.png"); background-size: cover; }
+
+/*# sourceMappingURL=index.css.map */

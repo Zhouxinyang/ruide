@@ -1,0 +1,42 @@
+<toolbar id="toolbar">
+	<form class="search-box">
+        <input type="text" name="name" value="" placeholder="店铺名称">
+        <button type="button" data-name="search" class="btn btn-default" data-event-type="default">
+            <i class="icon-search"></i>
+        </button>
+    </form>
+</toolbar>
+
+<!-- 表格 -->
+<table id="table" data-toggle="gridview" data-side-pagination="client" class="table table-hover" data-url="__ACTION__" data-toolbar="#toolbar">
+    <thead>
+		<tr>
+			<th data-width="40" data-checkbox="true"></th>
+			<th data-width="200" data-field="name">店铺名称</th>
+			<th data-width="100" data-field="receiver_name">退货联系人</th>
+			<th data-width="110" data-field="receiver_mobile">退货电话</th>
+			<th data-field="receiver_detail">退货地址</th>
+            <th data-field="receiver_zip">退货邮编</th>
+			<th data-width="200" data-align="right" data-formatter="formatter_action">操作</th>
+		</tr>
+	</thead>
+</table>
+
+<script src="__CDN__/js/address.js"></script>
+<script>
+function formatter_action(val, row, index){
+	return '<a href="javascript:;" class="js-edit" data-id="'+row.id+'">编辑</a>' +
+	' <a href="javascript:;" class="js-goods" data-shop="'+row.name+'">商品</a>';
+}
+$(function(){
+	var $table = $('#table');
+	$table.on('click', '.js-goods',function(){
+		var shop = $(this).data('shop');
+		$.get('__URL__/goods?shop='+shop, function(html){
+			$('body').append(html);
+		});
+		return false;
+	});
+});
+
+</script>

@@ -1,0 +1,35 @@
+<div class="scroll-notice">
+	<div class="beginner-read">
+		<span class="scroll-title">新手必读</span>
+		<div id="beginner_read" class="scroll-content">
+			<a class="scroll-item">长按图片查看高清原图</a>
+			<a class="scroll-item">再长按图片可另存到手机中</a>
+			<a class="scroll-item">将商品加入购物车统一下单</a>
+			<a class="scroll-item">长按图片查看高清原图</a>
+		</div>
+	</div>
+</div>
+<script>
+(function(){
+	var oneHeight = 24;
+	var scrollHeight = 0;
+	var maxHeight = oneHeight * beginner_read.childElementCount;
+	setInterval(function(){
+		if(scrollHeight == 24){
+			beginner_read.style.transition = 'all 0.5s ease-in-out';
+		}
+		
+		beginner_read.style.transform = 'translateY(-'+scrollHeight+'px)';
+		
+		if(maxHeight - scrollHeight == oneHeight){
+			setTimeout(function(){
+				beginner_read.style.transition = 'all 0ms ease-in-out';
+				beginner_read.style.transform = 'translateY(0)';
+			}, 600);
+			scrollHeight = 24;
+		}else{
+			scrollHeight += 24;
+		}
+	}, 2500);
+})();
+</script>

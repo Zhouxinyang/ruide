@@ -1,0 +1,171 @@
+ <toolbar id="toolbar" class="toolbar">
+	<form id="order_search" class="form-horizontal">
+		<div class="filter-groups">
+			<div class="control-group">
+				<label class="control-label">微信公众号</label>
+				<div class="controls">
+					<select name="appid">
+					<foreach name="wxlist" key="appid" item="item">
+						<option value="{$appid}">{$item['name']}</option>
+					</foreach>
+					</select>
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label">代理手机号</label>
+				<div class="controls">
+					<input type="text" name="mobile" data-rule-mobile="true">
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label">微信昵称</label>
+				<div class="controls">
+					<input type="text" name="nickname">
+				</div>
+			</div>
+		</div>
+		<div class="filter-groups">
+			<div class="control-group">
+				<label class="control-label">代理级别</label>
+				<div class="controls">
+					<select name="agent_level" >
+						<option value="">请选择</option>
+						<foreach name="levels" item="vo" key="k">
+							<option value="{$k}">{$vo['title']}</option>
+						</foreach>
+					</select>
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label">代理姓名</label>
+				<div class="controls">
+					<input type="text" name="name">
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label">代理ID</label>
+				<div class="controls">
+					<input type="text" name="mid" value="{$mid}">
+				</div>
+			</div>
+		</div>
+		<div class="filter-groups">
+			<div class="control-group">
+				<label class="control-label">省份</label>
+				<div class="controls">
+					<select name="province_id" id="province_id" data-city="#city_id" data-selected="">
+						<option value="">请选择</option>
+					</select>
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label">城市</label>
+				<div class="controls">
+					<select name="city_id" id="city_id" data-county="#county_id" data-selected=""><option value="">请选择</option></select>
+				</div>
+			</div>
+   		</div>
+	</form>
+</toolbar>
+
+<!-- 表格 -->
+<table id="table" data-toggle="gridview" class="table table-hover" data-url="__URL__" data-toolbar="#toolbar"  data-page-list="[1, 10, 25, 50, All]">
+    <thead>
+		<tr>
+			<th data-width="40" data-checkbox="true"></th>
+			<th data-field="id" data-width="80">ID</th>
+            <th data-field="nickname">微信昵称</th>
+			<th data-field="mobile" data-width="110">手机号</th>
+			<th data-field="balance" data-align="center">余额</th>
+			<th data-field="agent_level" data-align="center" data-width="100">代理级别</th>
+			<th data-field="sex" data-formatter="fomat_status" data-width="50">性别</th>
+			<th data-field="reg_time" data-width="130">加入时间</th>
+			<th data-field="city">城市</th>
+			<th data-field="name">姓名</th>
+		</tr>
+	</thead>
+</table>
+<script type="text/javascript">
+//格式化数据
+function fomat_status(status, row, index){
+	if(status == '1'){
+		return '男';
+	}else if(status == '2'){
+		return '女';
+	}else{
+		return '保密';
+	}
+}
+$(function(){
+	$('#table').on('balance_list',function(e, gridview ,params){
+		if(gridview.currentRow == null){
+			alertMsg('请先选择会员！', 'warning');
+			return false;
+		}
+		$.get('__URL__/balance_list?mid=' + gridview.currentRow.id, function(html){
+			$('body').append(html);
+		});
+		return false;
+	}).on('change_level',function(e, gridview ,params){
+		var rows = $('#table').bootstrapTable('getSelections'); // 当前页被选中项(getAllSelections 所有分页被选中项)
+		if(rows.length == 0){ 
+			alertMsg('请先勾选要修改等级的会员', 'warning');
+			return false; 
+		}
+		var ids = [];
+		for(i=0;i<rows.length;i++){
+			ids.push(rows[i]['id']);
+		}
+		params.url = '__URL__/change_level?id=' + ids;
+	}).on('employee',function(e, gridview ,params){
+		var rows = $('#table').bootstrapTable('getSelections'); // 当前页被选中项(getAllSelections 所有分页被选中项)
+		if(rows.length == 0){ 
+			alertMsg('请先勾选要修改的会员', 'warning');
+			return false; 
+		}
+		var ids = [];
+		for(i=0;i<rows.length;i++){
+			ids.push(rows[i]['id']);
+		}
+		params.url = '__URL__/employee?id=' + ids;
+	}).on('black_add',function(e, gridview ,params){
+		var rows = $('#table').bootstrapTable('getSelections'); // 当前页被选中项(getAllSelections 所有分页被选中项)
+		if(rows.length == 0){ 
+			alertMsg('请先勾选要加入黑名单的会员', 'warning');
+			return false; 
+		}
+		var ids = [];
+		for(i=0;i<rows.length;i++){
+			ids.push(rows[i]['id']);
+		}
+		params.url = '/mall/black/black_add?id=' + ids;
+	}).on('order_list',function(e, gridview ,params){
+		if(gridview.currentRow == null){
+			alertMsg('请先选择会员！');
+			return false;
+		}
+		params.url = '/mall/order?buyer_id=' + gridview.currentRow.id;
+	}).on('reissue_score',function(e, gridview ,params){
+		var row = gridview.currentRow; // 当前页被选中项(getAllSelections 所有分页被选中项)
+		if(!row){ 
+			alertMsg('请点击选择要补发积分的会员', 'warning');
+			return false; 
+		}
+		params.url += '?id=' + row.id;
+	}).on('show_cm',function(e, gridview ,params){
+		if(gridview.currentRow == null){
+			alertMsg('请先选择会员！', 'warning');
+			return false;
+		}
+		
+		params.url = '__URL__/show_cm?mid=' + gridview.currentRow.id;
+	}).on('member_out',function(e, gridview ,params){
+		var ids = gridview.currentRow.id
+		params.url = '__URL__/member_out?change_mid=' + ids;
+	});
+});
+</script>
+<script src="/js/address.js"></script>
+<script type="text/javascript">
+	Address.bind("#province_id");
+</script>

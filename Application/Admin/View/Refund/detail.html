@@ -1,0 +1,430 @@
+<div id="refund_form">
+	<style>
+	.refund-container{padding:0 15px;max-height:470px}
+	.refund-container .table{padding:0;margin:0;}
+	.refund-container .refund-title{}
+	.refund-container .refund-t-title{width:350px}
+	.refund-container .refund-t-num{width:50px;text-align:center}
+	.refund-container .refund-t-price{width:120px;text-align:center}
+	.refund-container .refund-t-refund_num{width:80px;text-align:center;vertical-align:middle}
+	.refund-container .refund-t-status{}
+	.refund-container .refund-list{max-height:150px;overflow-y:scroll}
+	</style>
+	<div class="modal-backdrop in"></div>
+	<div class="modal hide fade" aria-hidden="true" style="width:800px;margin-left:-400px" data-backdrop="false">
+		<div class="modal-header ">
+			<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+			<h3>{$trade.tid} - <span class="label label-warning" style="font-size: 24.5px;padding: 10px 4px;">{$trade.status_str}</span></h3>
+		</div>
+		<div class="modal-body refund-container">
+			<div class="refund-title">
+				<table class="table">
+					<thead>
+					   <tr>
+						   <th class="refund-t-title">产品</th>
+						   <th class="refund-t-num">数量</th>
+						   <th class="refund-t-price">单价/折后价</th>
+						   <th class="refund-t-refund_num">退换数量</th>
+						   <th class="refund-t-status">退换状态</th>
+					   </tr>
+				   </thead>
+				</table>
+			</div>
+			<div class="refund-list" id="refundlist">
+				<table class="table" style="margin:0">
+				   <tbody class="js-orders">
+						<foreach name="trade['orders']" item="item">
+						<tr data-oid="{$item.oid}">
+							<td class="refund-t-title">{$item.title} <span style="color:#f60">{$item.spec}</span></td>
+							<td class="refund-t-num">{$item.num}</td>
+							<td class="refund-t-price">{$item.price}
+							<if condition="$item['price'] gt $item['discount_price']">
+							<span class="label label-warning">{$item.discount_price}</span>
+							</if>
+							</td>
+							<td class="js-refund-num refund-t-refund_num" style="padding:0 8px">{$item.refund_num}</td>
+							<td class="refund-t-status">
+							{$item.refund_state_str}
+							</td>
+						</tr>
+						</foreach>
+					</tbody>
+			   </table>
+		   </div>
+		   <table class="table">
+				<tr>
+					<th style="width:75px">支付总额</th>
+					<td>{$trade.paid_fee}元</td>
+					<th>累计退款</th>
+					<td><span class="js-total_refund">{$trade.refunded_fee}/{$trade.total_refund_fee}</span>元</td>
+					<th>订单邮费</th>
+					<td>{$trade.post_fee}元</td>
+				</tr>
+				<tr>
+					<th style="vertical-align: middle;">*退款原因</th>
+					<td>
+						<select style="width:220px;margin-bottom:0" class="js-reason" name="refund_reason" disabled="disabled">
+							<option value="">请选择</option>
+							<foreach name="reason" key="id" item="txt">
+							<option value="{$id}">{$txt}</option>
+							</foreach>
+						</select>
+					</td>
+					<th style="vertical-align: middle;">*退款总额</th>
+					<td><input type="text" value="0.00" max="0" style="width:100px" class="js-refund_fee" name="refund_fee" disabled="disabled"></td>
+					<th style="vertical-align: middle;">*邮费补偿</th>
+					<td><input type="text" value="0.00" max="{$trade['post_fee'] == 0 ? 10 : $trade['post_fee']*2}" min="0" style="width:100px" name="refund_post" class="js-refund_post" disabled="disabled"></td>
+				</tr>
+				<tr>
+					<th>*退款说明</th>
+					<td colspan="5" class="js-remark">无退款</td>
+				</tr>
+				<tr class="js-images hide">
+					<th>*退款图片</th>
+					<td colspan="5"></td>
+				</tr>
+				<tr class="js-agree-action hide">
+					<td colspan="6" style="text-align:center">
+						<label class="radio inline" style="padding-top:0"><input type="radio" name="agree" value="1">同意退款</label>
+						<label class="radio inline" style="padding-top:0"><input type="radio" name="agree" value="0">拒绝退款</label>
+					</td>
+				</tr>
+				<tr class="js-agree-result hide"></tr>
+		   </table>
+		</div>
+		<div class="modal-footer">
+			<button type="button" class="btn" data-dismiss="modal">关闭</button>
+			<span class="js-action"></span>
+		</div>
+		<script id="refund_address" type="text/html">
+			<th style="vertical-align:top">退货地址</th>
+			<td colspan="5">
+				<p>
+					<input type="text" name="receiver_name" placeholder="收货人" style="width: 100px"> -
+					<input type="text" name="receiver_mobile" placeholder="手机号" style="width:120px">
+					<label class="checkbox inline" style="padding-top:0"><input type="checkbox" name="no_express" value="1">无需上传退货运单号</label>
+					<a class="js-express_no" href="http://m.kuaidi100.com/result.jsp?nu=" target="_blank" style="float:right;margin:5px 20px"></a>
+				</p>
+				<input type="text" name="receiver_address" class="js-receiver_address" placeholder="省 市 区/县 详细地址" style="width: 630px">
+			</td>
+		</script>
+		<script id="refund_refuse" type="text/html">
+			<th style="vertical-align:top">拒绝原因</th>
+			<td colspan="5">
+				<textarea name="refund_sremark" placeholder="5~200字符"style="margin: 0px; width: 627px; height: 40px;"maxlength="200"></textarea>
+			</td>
+		</script>
+		<script>
+		(function(){
+			 var $content			= $('#refund_form')
+				,$form 				= $content.children('.modal')
+				,$tbody				= $form.find('.js-orders')
+				,$reason 			= $form.find('.js-reason')
+				,$remark 			= $form.find('.js-remark')
+				,$refund_num        = $form.find('.js-refund_num')
+				,$refund_fee        = $form.find('.js-refund_fee')
+				,$refund_post       = $form.find('.js-refund_post')
+				,$total_refund      = $form.find('.js-total_refund')
+				,$imagesTr			= $form.find('.js-images')
+				,$agreeAction       = $form.find('.js-agree-action')
+				,$agreeResult	    = $form.find('.js-agree-result')
+				,refund				= null
+				,$action 			= $form.find('>.modal-footer>.js-action')
+				,tradeStatus		= "{$trade['status']}";
+			 var reloadRefund = function(){
+				 $.get('__URL__/detail?tid={$trade.tid}', function(html){
+					 $content.remove();
+					 $('body').data('refunded', true).data('prev_refund_oid', refund.oid).append(html);
+				 });
+			 }
+			 
+			 var refundList = {:json_encode($trade['orders'])};
+			 var post = {tid: '{$trade.tid}', type: 0, orders: {}};
+			 
+			 // 关闭弹窗
+			 var colseRefund = function(){
+				var $body = $('body');
+				if($body.data('refunded')){
+					$body.trigger('refund');
+				}
+				$content.remove();
+				return false;
+			 }
+			 $content.children('.modal-backdrop').on('click', colseRefund);
+			 $form.modal().on('hide', colseRefund);
+			 $form.find('.refund-title').css('margin-right', refundlist.offsetWidth - refundlist.clientWidth);
+			 
+			 // 显示或隐藏退货地址
+			 var initAddress = function(readonly){
+				$agreeResult.html($('#refund_address').html());
+				
+				$agreeResult.find('[name="receiver_name"]').val(refund.receiver_name).prop('disabled', readonly);
+				$agreeResult.find('[name="receiver_mobile"]').val(refund.receiver_mobile).prop('disabled', readonly);
+				$agreeResult.find('[name="receiver_address"]').val(refund.receiver_address).prop('disabled', readonly);
+				
+				// 显示上传的运单号
+				if(refund.refund_express != ''){
+					$agreeResult.find('.js-express_no').html(refund.refund_express).attr('href', '//m.kuaidi100.com/result.jsp?nu='+refund.refund_express);
+				}
+
+				var $clear = $agreeResult.find('[name="no_express"]');
+				// 无需上传运单号
+				$clear.prop('checked', !!refund.no_express);
+				$clear.trigger('change');
+				
+				// 隐藏无需上传退货单号
+				if(readonly){
+					$clear.parent().remove();
+				}
+				
+				if(readonly && !refund.receiver_address){
+					$agreeResult.addClass('hide');
+				}else{
+					$agreeResult.removeClass('hide');
+				}
+			 }
+			 
+			 // 表单数值改变
+			 $form.on('change', 'input,textarea,select',function(){
+				 if(this.name == 'no_express'){
+					 var $btn = $action.find('button'),
+						action = $action.data(this.checked ? 'action2' : 'action1');
+					
+					 if(!!action){
+						$btn.html(action.text).removeClass('btn-primary btn-danger').addClass(action.className);
+					 }
+					 
+					 $agreeResult.find('input').not(this).prop('disabled', this.checked);
+					 refund[this.name] = !!this.checked;
+					 return false;
+				 }
+
+				 refund[this.name] = this.value;
+				 if(this.name == 'agree'){
+					var $btn = $action.find('button');
+					if(this.value == 1){ // 同意
+						initAddress(false);
+					}else{
+						$btn.html('拒绝退款').removeClass('btn-primary').addClass('btn-danger');
+						$agreeResult.html($('#refund_refuse').html());
+						$agreeResult.find('[name="refund_sremark"]').val(refund.refund_sremark);
+					}
+				 }else if(this.name == 'refund_reason'){
+					 if(this.value == 11){
+						 $form.find('input[name="no_express"]').prop('checked', true).trigger('change');
+					 }
+				 }else if(this.name == 'refund_num' || this.name == 'refund_fee' || this.name == 'refund_post'){
+					 var fee = this.value == '' || isNaN(this.value) || this.value < 0 ? 0 : this.value * 1
+								,max = this.max * 1, min = this.min * 1;
+					 if(fee < min) fee = min;
+					 if(fee > max) fee = max;
+					 
+					 if(this.name == 'refund_num'){
+						 this.value = fee;
+						 $refund_fee.attr('max', fee * refund.discount_price).val(fee * refund.discount_price).trigger('change');
+					 }else{
+						 this.value = fee.toFixed(2);
+					 }
+				 }
+				 
+				 refund[this.name] = this.value;
+				 return false;
+			 });
+			 
+			// 点击某个退款查看详情
+			 $tbody.children().on('click', function(){
+				 var $tr = $(this);
+				 if($tr.hasClass('info')){return false}
+				 
+				 var $siblings = $tr.addClass('info').siblings();
+				 $siblings.removeClass('info');
+				 // 还原上次编辑的退换数量
+				 if(!!refund){
+					 $siblings.filter('[data-oid="'+refund.oid+'"]').find('.js-refund-num').html(refundList[refund.oid].refund_num);
+				 }
+				 var oid = $tr.data('oid');
+				 refund = $.extend({}, refundList[oid]);
+				 refund.no_express = refund.refund_type == 1 || tradeStatus == 'tosend';
+				 //refund.can_reset = false;
+	
+				 // 退款原因、退款总额、邮费补偿
+				 var enableInput = ['0', '1', '2', '2.1'], disabled = !refund.can_reset;
+				 if(enableInput.indexOf(refund.refund_state) > -1){
+					 disabled = false;
+				 }
+				 $refund_fee.attr('disabled', disabled).val(refund.refund_fee).attr('max', refund.refund_num * refund.discount_price);
+				 $refund_post.attr('disabled', disabled).val(refund.refund_post);
+				 
+				 // 可修改退换货数量
+				 var enableRefundNum = false;
+				 if(refund.can_reset && (refund.refund_state == 0 || refund.refund_state == 4 || refund.refund_state == 5)){
+					 enableRefundNum = true;
+				 }else if(refund.refund_state == 1){
+					 enableRefundNum = true;
+				 }
+				 if(enableRefundNum){
+					 $tr.find('.js-refund-num').html('<input type="text" name="refund_num" value="'+refund.refund_num+'" style="width:30px;text-align:center" min="1" max="'+refund.num+'">');
+				 }
+				 $reason.val(refund.refund_reason).prop('disabled', !enableRefundNum);
+				 if(refund.refund_reason == 11){
+					 refund.no_express = true;
+				 }
+				 
+				 // 退款说明
+				 $remark.html('<span class="label label-warning"style="margin-right:10px" data-type="'+refund.refund_type+'">'+(refund.refund_type==1?'未收到货' : '已收到货')+'</span>'+refund.refund_remark);
+				 
+				 var showAgree = false, addressReadonly = true, action1 = action2 = null;
+				 if(refund.can_reset){
+					 action1 = {text: '重新退款', className: 'btn-danger', action: 'agree', parameters: ['refund_num', 'refund_reason', 'refund_fee', 'refund_post', 'receiver_name', 'receiver_mobile', 'receiver_address']};
+					 action2 = {text: '立即退款', className: 'btn-danger', action: 'agree', parameters: ['refund_num', 'refund_reason', 'refund_fee', 'refund_post']};
+					 if(refund.refund_state == 0){
+						 action1.text = '添加退款';
+						 action1.action = action2.action = 'add';
+					 }
+					 addressReadonly = false;
+				 }else if(refund.refund_state == 1){	// 未处理
+					 showAgree = true;
+					 action1 = {text: '同意退款', className: 'btn-primary', action: 'agree', parameters: ['refund_num', 'refund_reason', 'refund_fee', 'refund_post', 'receiver_name', 'receiver_mobile', 'receiver_address']};
+					 action2 = {text: '立即退款', className: 'btn-danger', action: 'agree', parameters: ['refund_num', 'refund_reason', 'refund_fee', 'refund_post']};
+					 addressReadonly = false;
+					 refund.agree = 1;
+				 }else if(refund.refund_state == 2){	// 待上传单号
+					 action1 = {text: '提前退款', className: 'btn-danger', action: 'now', parameters: ['refund_fee', 'refund_post']};
+					 refund.no_express = true;
+				 }else if(refund.refund_state == 2.1){	// 等待退款
+					 action1 = {text: '立即退款', className: 'btn-primary', action: 'now', parameters: ['refund_fee', 'refund_post']};
+					 refund.no_express = true;
+					 addressReadonly = true;
+				 }else if(refund.refund_state == 3){
+					 
+				 }else if(refund.refund_state == 4){	// 拒绝退款
+					 
+				 }else if(refund.refund_state == 5){	// 取消退款
+					 
+				 }
+				 
+				 // 图片
+				 if(refund.refund_images != ''){
+					 var images = refund.refund_images.split(';');
+					 var html = '';
+					 var yier = ['一', '二', '三', '四', '五', '六', '七', '八'];
+					 for(var i=0; i<images.length; i++){
+						 html += '<a href="'+images[i]+'" target="_blank" style="margin-right:10px;">图片'+yier[i]+'</a>';
+					 }
+					 $imagesTr.children('td').html(html);
+					 $imagesTr.show();
+				 }else{
+					 $imagesTr.hide();
+				 }
+				 
+				 // 是否显示同意/拒绝
+				 if(showAgree){
+					 $agreeAction.removeClass('hide');
+					 $agreeAction.find('input[value="'+(refund.refund_state == 0 || refund.refund_state == 1 ? 1 : 0)+'"]').prop('checked', true);
+				 }else{
+					 $agreeAction.addClass('hide');
+				 }
+				 
+				 $action.data({action1: action1, action2: !!action2 ? action2 : action1});
+				 if(!!action1){
+					 $action.html('<button type="button" class="btn"></button>');
+				 }else{
+					 $action.html('');
+				 }
+				 initAddress(addressReadonly);
+				 return false;
+			 });
+			 
+			 // 默认选中
+			 var prev_refund_oid = $('body').data('prev_refund_oid') || 0;
+			 for(var oid in refundList){
+				 if(prev_refund_oid == oid){
+					 break;
+				 }
+				 
+				 if(!!refundList[oid].refund_state && !prev_refund_oid){
+					 prev_refund_oid = oid;
+				 }
+			 }
+			 if(prev_refund_oid > 0){
+				 $tbody.children('[data-oid="'+prev_refund_oid+'"]').trigger('click');
+			 }
+			 
+			 // 保存
+			 $action.on('click', function(){
+				 var $btn = $action.find('button'),
+				 	 action = '';
+				 
+				 var parameters = {};
+				 if(refund.refund_state*1 == 1 && !(refund.agree*1)){
+					 if(refund.refund_sremark.length < 5){
+						 return alert('请补全拒绝原因'), false;
+					 }
+					 
+					 parameters.refund_sremark = refund.refund_sremark;
+					 action = 'refuse';
+				 }else{
+					 var errorMsg = '', 
+						 value = null,
+						 action = refund.no_express ? $action.data('action2') : $action.data('action1');
+					 for(var i=0; i<action.parameters.length; i++){
+						 // 数据校验
+						 value = refund[action.parameters[i]];
+						 switch(action.parameters[i]){
+						 	case 'receiver_name':
+						 		if(value.length < 2)
+						 			errorMsg = '请补全退货联系人';
+						 		break;
+						 	case 'receiver_mobile':
+						 		if(!/^(1[3|4|5|7|8]\d{9})||(\d{4}-\d{8})$/.test(value))
+						 			errorMsg = '请补全退货联系人号码';
+						 		break;
+						 	case 'receiver_address':
+						 		if(value.length < 10)
+						 			errorMsg = '请补全退货详细地址';
+						 		break;
+						 	case 'refund_fee':
+						 		break;
+						 	case 'refund_num':
+						 		if(value < 1){
+						 			errorMsg = '退换数量不能小于1';
+						 		}
+						 		break;
+						 	case 'refund_post':
+						 		break;
+						 	case 'refund_reason':
+						 		if(value == '' || value < 1){
+						 			errorMsg = '请选择退款原因';
+						 		}
+						 		break;
+					 		default:
+					 			errorMsg = '';
+						 		break;
+						 }
+						 
+						 if(errorMsg != ''){
+				 			return alert(errorMsg), false;
+						 }
+						 parameters[action.parameters[i]] = refund[action.parameters[i]];
+					 }
+					 action = action.action;
+				 }
+				 
+				 parameters.refund_id = action == 'add' ? refund.oid : refund.refund_id;
+				 
+				 $btn.attr('disabled', 'disabled');
+				 $.ajax({
+					 url: '/admin/refund/'+action,
+					 type: 'post',
+					 dataType: 'json',
+					 data: parameters,
+					 success: function(){
+						 reloadRefund();
+					 }
+				 });
+				 return false;
+			 })
+		})();  
+		</script>
+	</div>
+</div>

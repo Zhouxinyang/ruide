@@ -1,0 +1,65 @@
+  	<meta charset="UTF-8">
+	<title>{:('[title]' == '['.'title'.']' ? C('WEBSITE_NAME') : '[title]')}</title>
+	<meta name="viewport" content="initial-scale=1, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <meta content="yes" name="apple-mobile-web-app-capable">
+	<meta content="red" name="apple-mobile-web-app-status-bar-style">
+	<meta name="format-detection" content="telphone=no">
+	<link rel="stylesheet" href="__CDN__/css/mall.css?modify=20161203">
+	<link rel="stylesheet" href="__CDN__/css/trade.css?modify=20161203">
+	<link rel="stylesheet" href="__CDN__/css/red.css">
+	<script type="text/javascript">
+	var require = {
+		baseUrl: '__CDN__/js',
+		waitSeconds: 0,
+		map: {
+		  '*': {
+			'css': '//cdn.bootcss.com/require-css/0.1.8/css.min.js',
+			'text': '//cdn.bootcss.com/require-text/2.0.12/text.min.js'
+		  }
+		},
+		shim: {
+			swiper: ['jquery', 'css!//cdn.bootcss.com/Swiper/3.3.1/css/swiper.min.css'],
+			lazyload: ['jquery'],
+		},
+		paths: {
+            'jquery': '//cdn.bootcss.com/jquery/1.12.4/jquery.min',
+			'template': 'template',
+			'validatejs': '//cdn.bootcss.com/jquery-validate/1.15.0/jquery.validate.min',
+			'weixinjs': 'https://res.wx.qq.com/open/js/jweixin-1.0.0',
+			'lazyload': '//cdn.bootcss.com/jquery.lazyload/1.9.1/jquery.lazyload.min',
+			'swiper': '//cdn.bootcss.com/Swiper/3.3.1/js/swiper.min',
+
+			'mall/cart': 'h5.js?modify=20161203',
+			'view/order/list': 'h5.js?modify=20161203',
+			'view/balance': 'h5.js?modify=20161203',
+			'module/cart/num': 'h5.js?modify=20161203',
+			'order/address': 'h5.js?modify=20161203',
+			'pay': 'h5.js?modify=20161203',
+			'view/personal/edit': 'h5.js?modify=20161203',
+			'view/personal/scoreDetail': 'h5.js?modify=20161203',
+			'view/present/list': 'h5.js?modify=20161203',
+			'view/score': 'h5.js?modify=20161203',
+			'pay/express': 'h5.js?modify=20161203',
+			'jsweixin': 'h5.js?modify=20161203',
+			'skumodal': 'h5.js?modify=20161203',
+			'customer_service': 'h5.js?modify=20161203',
+			'order/refund': 'h5.js?modify=20161203',
+			'model_pay_coupon': 'h5.js?modify=20161203',
+			'login_modal': 'h5.js?modify=20161203',
+			'member/collection': 'h5.js?modify=20161203',
+            'pullfresh': 'h5.js?modify=20161203',
+            'goods_list': 'h5.js?modify=20161203',
+          	'search': 'h5.js?modify=20161203',
+  			'payconfirm': '/js/pay-confirm.js?modify=20161203'
+		}
+	}
+	</script>
+	<if condition="IS_APP">
+	<script type="text/javascript" src="__CDN__/js/appcan.min.js"></script>
+	</if>
+	<script data-main="__CDN__/js/h5.js?modify=20161203" src="//cdn.bootcss.com/require.js/2.3.1/require.min.js"></script>
+	<php>
+    if(!APP_DEBUG){
+        require_once 'cs.php';echo '<img src="'._cnzzTrackPageView(1259294058).'" width="0" height="0" style="display:none;"/>';
+    }
+    </php>

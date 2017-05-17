@@ -1,0 +1,118 @@
+<style>
+.goods-title {
+    max-height: 28px;
+    word-break: break-all;
+    overflow: hidden;
+    margin-bottom: 4px;
+    line-height: 14px;
+}
+</style>
+<div id="toolbar" class="toolbar">
+	<div class="btn-group">
+		<button type="button" data-name="export" class="btn btn-default" data-event-type="custom" ><i class=""></i> 导出excel</button>
+	</div>
+	 <form class="search-box" novalidate="novalidate">
+	  <div class="filter-groups">
+			<div class="control-group">
+			<div class="controls">
+				<div class="input-append date" data-format="yyyy-MM-dd hh:mm:ss" >
+					<input type="text" name="start_date" value="{$start_date}" style="width:78px;">
+					<span class="add-on"><i class="icon-th"></i></span>
+				</div>
+				至
+				<div class="input-append date" data-format="yyyy-MM-dd hh:mm:ss">
+					<input type="text" name="end_date" value="{$end_date}" style="width:78px;">
+					<span class="add-on"><i class="icon-th"></i></span>
+				</div>
+			</div>
+			</div>
+	 </div>
+		<notempty name="allShop">
+		<select name="seller_id" data-search="true" style="margin-bottom: 0;width: auto;">
+			<option value="">所有店铺</option>
+			<foreach name="allShop" item="item">
+			<option value="{$item.id}">{$item.name}</option>
+			</foreach>
+		</select>
+		</notempty>
+		 <select name="refund_state" data-search="true" style="margin-bottom: 0;width: auto;">
+			<option value="">所有状态</option>
+            <option value="1" selected="selected">退款申请中</option>
+            <option value="2">待上传单号</option>
+            <option value="2.1">等待退款</option>
+            <option value="3">已退款</option>
+            <option value="4">拒绝退款</option>
+            <option value="5">已取消退款</option>
+		</select>
+		<input type="text" name="tid" value="" placeholder="订单号/退款运单号" style="width:120px">
+		<button type="button" data-name="search" class="btn btn-default" data-event-type="default" data-target="modal">
+			<i class="icon-search"></i>
+		</button> 
+	</form> 
+</div>
+
+<!-- 表格 -->
+<table id="table" data-toggle="gridview" class="table table-hover" data-url="__ACTION__" data-toolbar="#toolbar" data-page-list="[1, 10, 25, 50, All]">
+	<thead>
+		<tr>
+			<th data-field="title" data-formatter="formatter_title">商品</th>
+			<th data-width="110" data-formatter="format_url" data-field="tid">订单号</th>
+			<th data-width="100" data-field="refund_state" data-formatter="formatter_refund_state">退款状态</th>
+			<th data-width="100" data-field="refund_fee" data-align="right" data-formatter="formatter_refund_fee">金额/邮补/数量</th>
+			<th data-width="100" data-field="refund_reason_str">退款原因</th>
+			<th data-width="120" data-field="refund_express">快递单号</th>
+			<th data-width="85" data-field="refund_created" data-align="right">申请时间</th>
+		</tr>
+	</thead>
+</table>
+
+<script>
+var refund_state = {"1":"退款申请中", "2":"待上传单号", "2.1":"等待退款", "3":"已退款", "4":"拒绝退款", "5":"已取消退款"};
+function formatter_title(val, row, index){
+	var html = '<a href="'+row.pic_url+'" target="_blank" style="float:left;"><img src="'+row.pic_url+'" style="width:64px; height:64px;"></a>';
+	html += '<div style="height:64px;margin-left: 74px;overflow:hidden;">';
+	html += '<p class="goods-title"><a href="/h5/goods?id='+row.goods_id+'" target="_blank">'+row.title+'</a></p>';
+	html += '<p>'+row.spec+' <a class="js-goods_feedback" data-gid="'+row.goods_id+'" title="反馈"><i class="icon-pencil"></i></a></p>';
+	return html+'</div>';
+}
+
+function formatter_refund_fee(val, row, index){
+	return '<span style="color:#f60">'+row.refund_fee + '</span><br><span style="color:#08C">' + row.refund_post + '</span><br>' + '<span style="">'+row.refund_num+'<span>'; 
+}
+
+function formatter_refund_state(val, row, index){
+	return '<a href="javascript:;" class="js-detail" data-tid="'+row.tid+'">'+refund_state[val]+'</a>';
+}
+
+function format_url(val, row, index){
+	if(val != ''){
+		return '<a href="/admin/order/detail?tid='+val+'" target="_blank">'+val+'</a>';
+	}else{
+		return val;
+	}
+}
+
+$(function(){
+	//退款
+	var $table = $('#table');
+	$table.on('click', '.js-detail', function(){
+		var tid = $(this).attr('data-tid');
+		$.get('__MODULE__/refund/detail?tid='+tid, function(html){
+			$('body').append(html).unbind('refund').on('refund', function(){
+				$('body').data('refunded', false);
+				$table.bootstrapTable('refresh');
+				return false;
+			});
+		});
+		return false;
+	}).on("export", function(e, gridview ,params){
+		var url = '__URL__/export';
+		var array = $('#toolbar form').serializeArray();
+		for(var i=0; i<array.length; i++){
+			url += (i == 0 ? '?' : '&') + array[i].name + '=' + array[i].value;
+		}
+		window.open(url);
+		return false;
+	});
+});
+</script>

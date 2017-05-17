@@ -1,0 +1,121 @@
+<div class="js-refund-modal">
+	<div class="js-cancel modal-backdrop"></div>
+	<div class="modal">
+		<div class="js-refund-fm address-ui address-fm" method="post" action="/h5/order/refund">
+	    	<h4 class="address-fm-title" style="color:#f60">{$order['refund_state_str']}</h4>
+		    <div class="js-address-cancel publish-cancel js-cancel">
+		        <div class="cancel-img"></div>
+		    </div>
+	    	<div class="block form" style="margin:0;max-height: 300px;overflow: auto;">
+	    		<if condition="!empty($order['receiver_address'])">
+	    		<div class="express-panel" style="padding: 10px 0;border-bottom: none;">
+			        <ul class="express-detail">
+			            <li class="clearfix">
+			                <span class="name">收货人：{$order['receiver_name']}</span><span class="tel">{$order['receiver_mobile']}</span>
+			            </li>
+			            <li class="address-detail">收货地址：{$order['receiver_address']}</li>
+			        </ul>
+			    </div>
+			    <div class="block-item">
+		            <label>快递单号</label>
+		            <empty name="order['refund_express']">
+		            <input type="text" class="js-express" placeholder="快递单号">
+		            <else/>
+		            <a href="http://m.kuaidi100.com/result.jsp?nu={$order['refund_express']}" target="_blank" style="color:#007aff">{$order['refund_express']}</a>
+		            </empty>
+		        </div>
+			    </if>
+		    	<if condition="$order['refund_state'] == 4">
+		        <div class="block-item" style="color:#f60"><span>拒绝缘由：{$order['refund_sremark']}</span></div>
+		        </if>
+		        <div class="block-item">
+		            <label>退款原因</label>
+		            <span>{$order.refund_reason_str}</span>
+	        	</div>
+	        	<if condition="$order['refund_num'] gt 0">
+		        <div class="block-item">
+		            <label>退货数量</label>
+		            <span>{$order['refund_num']}</span>
+		        </div>
+		        </if>
+		        <div class="block-item">
+		            <label>退款总额</label>
+		            <span>{:bcadd($order['refund_fee'], $order['refund_post'], 2)}</span>
+		        </div>
+		        <if condition="!empty($order['refund_endtime'])">
+		        <div class="block-item">
+		            <label>{$order['refund_state'] == 3 ? '到账' : '结束'}时间</label>
+		            <span>{$order.refund_endtime}</span>
+		        </div>
+		        </if>
+		        <div class="block-item">
+		            <label style="vertical-align: top;">退款说明</label>
+		            <span style="line-height:13px">{$order.refund_remark|htmlspecialchars}</span>
+		        </div>
+		        <if condition="count($order['refund_images']) gt 0">
+		        <div class="block-item" style="margin: 0;padding: 10px 0 10px;">
+		            <table style="width: 100%;min-height: 60px;table-layout: fixed;color: #ddd;">
+						<tr class="js-image-list">
+							<php>
+							for($i=0; $i<5; $i++){
+								if(isset($order['refund_images'][$i])){
+									echo '<td style="border: 1px dashed #ddd;text-align: center;"><img src="'.$order['refund_images'][$i].'" style="width:100%"></td>';
+								}else{
+									echo '<td style="border: 1px dashed #ddd;text-align: center;"> </td>';
+								}
+							}
+							</php>
+						</tr>
+					</table>
+		        </div>
+		        </if>
+		        <if condition="!empty($order['express'])">
+		        <div class="block-item">
+		            <label>快递单号</label>
+		            <span>{$order.refund_express}</span>
+		        </div>
+	            </if>
+	    	</div>
+	    	<if condition="$order['refund_state'] == 2">
+		    <div class="action-container">
+	            <button type="button" class="js-save_express btn btn-block btn-red">保存快递单号</button>
+	        </div>
+	        </if>
+		</div>
+	</div>
+	<script>
+	(function(){
+		var $modal = $('.js-refund-modal')
+		   ,$express = $modal.find('.js-express');
+
+		// 关闭弹窗
+		$modal.find('.js-cancel').on('click', function(){
+			$modal.remove();
+			return false;
+		});
+		
+		var width = ((document.documentElement.clientWidth - 26) / 5).toFixed(2);
+		$modal.find('.js-image-list td').css({width: width, height: width});
+		$modal.find('.form').css('max-height', (document.documentElement.clientHeight * 0.7 ).toFixed(2) + 'px');
+		
+		// 保存快递单号
+		$modal.find('.js-save_express').on('click', function(){
+			var express_no = $express.val();
+			if(express_no.length < 10){
+				return toast.show('请输入快递单号'), false
+			}
+			$.ajax({
+				url: '/h5/refund/express',
+				data:{refund_id: '{$order['refund_id']}', refund_express: express_no},
+				type: 'post',
+				dataType: 'json',
+				success: function(){
+					$modal.remove();
+					window.location.reload();
+				}
+			});
+			return false;
+		});
+	})();
+	</script>
+</div>

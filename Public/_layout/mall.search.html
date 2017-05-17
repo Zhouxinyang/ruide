@@ -1,0 +1,17 @@
+<div class="search-bar top-fix">
+	<form class="search-form ignore" method="GET">
+		<button type="button" class="js-search-cancel search-cancel">取消</button>
+		<div class="search-content">
+            <foreach name="_GET" key="searc_field" item="searc_val">
+            <input type="hidden" name="{$searc_field}" value="{$searc_val}">
+            </foreach>
+			<input type="search" class="search-input" placeholder="搜索所有商品" name="title" value="{$title|htmlspecialchars}" maxlength="8">
+			<span class="search-icon"></span>
+		</div>
+		<button type="submit" class="search-submit">搜索</button>
+	</form>
+	<div class="history-wrap top-fix center">
+		<ul class="history-list js-history-list clearfix"></ul>
+		<a class="tag tag-clear js-tag-clear" href="javascript:;">清除历史搜索</a>
+	</div>
+</div>

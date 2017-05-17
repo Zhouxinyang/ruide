@@ -1,0 +1,62 @@
+<toolbar id="toolbar">
+	<form class="form-horizontal">
+		<input type="text" class="hidden" name="data[id]">
+		<div class="control-group span6">
+			<label class="control-label">姓名</label>
+			<div class="controls">
+				<input type="text" name="data[username]" data-search="true" placeholder="最多8个字符" maxlength="8">
+			</div>
+		</div>
+		<div class="control-group span6">
+			<label class="control-label">身份证号码</label>
+			<div class="controls">
+				<input type="text" name="data[card]" data-search="true" placeholder="请输入身份证号码" maxlength="18">
+			</div>
+		</div>
+		<div class="control-group span6">
+			<label class="control-label">微信号</label>
+			<div class="controls">
+				<input type="text" name="data[wechat]" data-search="true" placeholder="请输入微信号" maxlength="20">
+			</div>
+		</div>
+		<div class="control-group span6">
+			<label class="control-label">手机号码</label>
+			<div class="controls">
+				<input type="text" name="data[mobile]" data-search="true" placeholder="请输入手机号码" maxlength="11">
+			</div>
+		</div>
+	</form>
+</toolbar>
+
+<!-- 表格 -->
+<table id="table" data-toggle="gridview" class="table table-hover" data-url="__URL__" data-toolbar="#toolbar" data-side-pagination="client">
+    <thead>
+		<tr>
+			<th data-width="40" data-align="center" data-checkbox="true"></th>
+			<th data-width="150" data-field="username">姓名</th>
+			<th data-width="250" data-field="card">身份证号码</th>
+			<th data-width="150" data-field="wechat">微信号</th>
+			<th data-width="200"  data-field="mobile">手机号</th>
+
+		</tr>
+	</thead>
+</table>
+
+<script type="text/javascript">
+
+$(function() {
+    $('#table').on('password', function (e, gridview, params) {
+        if (gridview.currentRow == null) {
+            alertMsg('请先选择要修改密码的用户');
+            return false;
+        }
+        params.data.id = gridview.currentRow.id;
+    }).on('check',function(e, gridview ,params){
+        if(gridview.currentRow == null){
+            alertMsg('请先选择要查看的用户！');
+            return false;
+        }
+        params.url = '__URL__/check?id=' + gridview.currentRow.id;
+    });
+});
+</script>

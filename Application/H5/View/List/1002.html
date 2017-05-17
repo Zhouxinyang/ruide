@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+	<include file="_layout/mall.head.html" />
+</head>
+<body class="body-fixed">
+	<div class="container">
+		<div class="content">
+			<div class="content-body">
+				<include file="_layout/mall.search.html" />
+				<notempty name="banners">
+				<div class="scale_wh scale_4_3">
+			         <div class="scale_content">
+			         	<div class="js-banner swiper-container">
+							<div class="swiper-wrapper">
+								<foreach name="banners" item="item">
+								<div class="swiper-slide"><a href="{$item.url|default='javascript:;'}"><img src="{$item.img_url}"></a></div>
+								</foreach>
+					  		</div>
+						</div>
+			         </div>
+		      	</div>
+				</notempty>
+				<include file="_layout/mall.news.html" />
+				<!--商品列表-->
+				<section class="js-goods-container">
+					<div class="js-sort tabber tabber-n2 tabber-double-11 clearfix">
+						<a class="active" href="javascript:;" data-status="doing">进行中</a>
+					    <a href="javascript:;" data-status="waiting">待开抢</a>
+					</div>
+					<ul id="goods-list" class="sc-goods-list clearfix list size-3 sc-groupon-list">
+						<li><div class="empty-list list-finished"><p class="font-size-12">正在加载中...</p></div></li>
+					</ul>
+				</section>
+			</div>
+		</div>
+		<include file="_layout/mall.copyright.html" />
+	</div>
+	<include file="_layout/mall.footer.html" />
+	<script type="text/javascript">
+	require(['goods_list', 'search'], function(gv, searchbar){
+		var $container = $('.js-goods-container')
+	       ,$sort      = $container.find('.js-sort')
+	       ,$list      = $container.children('.js-goods-list')
+	       ,focus      = !!history.state && history.state.focus ? history.state.focus : 'doing';
+		
+		// 查询参数
+	    gv.queryParams = function(params){
+	        for(var key in searchbar.data){
+	            params[key] = searchbar.data[key];
+	        }
+	        params.status = focus;
+	        gv.cacheKey = focus;
+	        
+	        $sort.find('a[data-status="'+focus+'"]').addClass('active').siblings().removeClass('active');
+	        return params;
+	    }
+		
+		gv.start({
+	        url: '/h5/list/search',
+	        container: '#goods-list',
+	        tplName: 'progess',
+	        pullfresh: true
+	    });
+		
+		// 排序
+	    $sort.on('click', 'a',function(){
+	        var $this = $(this);
+	        focus = $this.data('status');
+	        
+            var data = history.state;
+            data.focus = focus;
+            data[gv.cacheKey].scrollTop = document.body.scrollTop;
+            history.replaceState(data, '', '');
+            
+	        gv.pullfresh.doRefresh();
+	        return false;
+	    });
+		
+		// 固定顶部排序
+	    var fixedTop = $container.offset().top - $sort.height() * 2;
+	    var fixed = false;
+	    window.addEventListener('scroll', function(){
+	        if(document.body.scrollTop >= fixedTop){
+	            if(!fixed){
+	                fixed = true;
+	                $sort.css({position: 'fixed', top: '44px'});
+	            }
+	        }else if(fixed){
+	            fixed = false;
+	            $sort.css({position: ''});
+	        }
+	    }, false);
+	});
+
+	<if condition="count($banners) gt 1">
+	require(['swiper'], function(){
+		var mySwiper = new Swiper('.js-banner',{
+			autoplay : 5000,
+			loop : true,
+			autoplayDisableOnInteraction : false
+		});
+	});
+	</if>
+	
+	require(['module/cart/num']);
+</script>
+</body>
+</html>

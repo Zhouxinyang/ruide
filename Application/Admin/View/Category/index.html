@@ -1,0 +1,37 @@
+<toolbar id="toolbar"></toolbar>
+<!-- 表格 -->
+<table id="table" data-toggle="gridview" class="table" data-url="__URL__" data-toolbar="#toolbar" data-side-pagination="client" data-tree-view="true" data-pagination="false">
+    <thead>
+        <tr>
+            <th data-width="40" data-checkbox="true"></th>
+            <th data-width="150" data-field="name" data-tree="true">名称</th>
+            <th data-width="80" data-field="icon" data-visible="false" data-align="center" data-formatter="formatter_icon">图标</th>
+            <th data-width="100" data-field="sort" data-align="center">排序</th>
+            <th data-field="created">创建时间</th>
+            <th data-field="goods_num">商品数量</th>
+            <th data-field="url" data-formatter="formatter_url">链接地址</th>
+        </tr>
+    </thead>
+</table>
+<script type="text/javascript">
+//图标
+function formatter_icon(val, row, index){
+    return val == '' ? '' : '<img class="img-circle" src="'+val+'" style="width:32px; height:32px">';
+}
+
+//链接地址
+function formatter_url(val, row, index){
+    return '/h5/list?cat_id='+row.id;
+}
+
+// 详细视图
+function formatter_view(index, row){
+    var html = '<ul class="cat-container clearfix">';
+    var items = row.items, padding = '0', border='', onclick = '';
+    for(var i=0; i<items.length; i++){
+        html += '<li class="cat-item ellipsis"><a class="js-edit" title="编辑" data-id="'+items[i].id+'">'+items[i].name+'</a><a class="js-delete cat-delete" title="删除" data-id="'+items[i].id+'"><i class="icon-trash"></i></a></li>';
+    }
+    html += '</ul>';
+    return html;
+}
+</script>

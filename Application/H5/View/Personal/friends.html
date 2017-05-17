@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <include file="_layout/mall.head.html" />
+    <style type="text/css">
+    
+	</style>
+</head>
+<body class="body-fixed">
+    <div class="container ">
+        <div class="content ">
+            <div class="search-bar top-fix">
+			    <form id="search_form" class="search-form ignore" method="GET">
+			        <div class="search-content">
+			            <input type="search" id="searchkw" class="search-input" placeholder="手机号/姓名/微信昵称" name="kw" maxlength="11">
+			            <span class="search-icon"></span>
+			        </div>
+			    </form>
+			</div>
+            <ul class="block block-list">
+                <li class="block-item">
+                    <div class="block-dot">我</div>
+                    <div class="block-info">
+                        <div class="block-title">{$my.name}<span class="block-tag">{$my.agent_title}</span></div>
+                        <div class="block-content">{$my.nickname}<span class="pull-right">{$my.mobile}</span></div>
+                    </div>
+                </li>
+            </ul>
+            
+        	<ul class="block block-list js-list"></ul>
+        	<!--底部结束-->
+            <div id="right-icon" class="js-right-icon no-text" style="bottom:100px">
+                <div class="js-right-icon-container right-icon-container clearfix" style="width: 50px;">
+                    <a id="global-back" href="javascript:win.back();" class="icon new s1">
+                        <p class="icon-img"></p>
+                        <p class="icon-txt">购物车</p>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <include file="_layout/mall.footer.html" />
+</body>
+<script>
+require(['pullfresh'], function(pullfresh){
+	var $container = $('.js-list');
+	var $form = $('#search_form');
+	var kw = '';
+	
+	// 下拉刷新控件初始化
+	pullfresh.init({
+        refresh: true,//是否启用刷新
+        container: $container, //是否有更多数据放谁的后面（返回的数据放在哪个的里面）
+        onLoad: function(parameters, isRefresh){ //执行加载数据，第一个参数：分页信息。第二个参数：是否为刷新；
+        	parameters.kw = kw;
+        	$.ajax({
+        		url: '/h5/personal/friends',
+        		data: parameters,
+        		dataType: 'json',
+        		success: function(list){
+        			var html = '';
+        			
+        			if(list.length==0 && parameters.page==1){ //在什么情况下显示没有查找数据
+        			    html += '<div style="padding-top:60px;" class="empty-list list-finished">';
+		        		html +=	'<div><h4>未找到任何数据</h4><p class="font-size-12">请重试或</p></div>';
+		        		html +=	'<div><a style="padding:8px 30px;" class="tag tag-big tag-orange" href="/h5/personal/">返回个人中心</a></div></div>';
+        			}else{
+        				for(var i=0; i<list.length; i++){
+            				html += '<li class="block-item">';
+            				html += '    <div class="block-dot">';
+            				html += '        <img src="'+list[i].headimgurl+'">';
+            				html += '    </div>';
+            				html += '    <div class="block-info">';
+            				html += '        <div class="block-title">'+list[i].name+'<span class="block-tag">'+list[i].agent_title+'</span></div>';
+            				html += '        <div class="block-content">'+list[i].nickname+'<span class="pull-right">'+list[i].mobile+'</span></div>';
+            				html += '    </div>';
+            				html += '</li>';
+            			}
+        			}
+        			
+        			if(parameters.page==1){ // 覆盖原有html元素
+        				$container.html(html);
+        			}else{ // 向页面追加数据
+        				$container.append(html);
+        			}
+        		   
+        			// 设置是否有更多数据
+        			pullfresh.setNoMore(list.length<parameters.size ? true : false);
+        		}
+        	});
+        }
+    });
+	
+	$form.on('submit', function(){
+		kw = $form.find('input').val();
+		pullfresh.doRefresh();	// 执行刷新
+		return false;
+	})
+});
+</script>
+</html>

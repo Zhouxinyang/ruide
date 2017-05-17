@@ -1,0 +1,76 @@
+<style>
+.product-modal .bootstrap-table{margin-top:-15px}
+.product-modal .bootstrap-table .fixed-table-container.table-no-bordered,
+.product-modal .bootstrap-table-clearfix{border: none}
+</style>
+
+<div id="memberModel" class="modal hide fade product-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="width: 800px;margin-left: -400px;">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+    <h3 id="myModalLabel">选择代理</h3>
+  </div>
+  <div class="modal-body">
+  	<div id="product_toolbar" class="toolbar">
+	  	<form style="text-align: center">
+	  		<input type="hidden" name="noid" value="{$change_mid}">
+			<input type="text" name="mobile" maxlength="11" style="width: 130px;" placeholder="请输入代理手机号">
+			<button type="button" data-name="search" class="btn btn-default" data-event-type="default">
+				<i class="icon-search"></i>
+			</button>
+		</form>
+  	</div>
+    <table class="table" data-url="/admin/api/search_member" data-toolbar="#product_toolbar" data-side-pagination="client" data-click-to-select="true">
+    	<thead>
+			<tr>
+				<th data-radio="true"></th>
+				<th data-width="80" data-field="head_img" data-formatter="formatter_head_img">微信头像</th>
+				<th data-width="210" data-field="nickname">微信昵称</th>
+				<th data-width="110" data-field="mobile">手机号</th>
+				<th data-width="80" data-field="agent_title">级别</th>
+				<th data-field="nick">姓名</th>
+			</tr>
+		</thead>
+    </table>
+  </div>
+  <div class="modal-footer">
+    <button class="btn" data-dismiss="modal" aria-hidden="true">关闭</button>
+    <button class="btn btn js-ok">修改上级</button>
+    <button class="btn btn-primary js-ok js-out">离职</button>
+  </div>
+</div>
+<script type="text/javascript">
+//头像
+function formatter_head_img(val, row, index){
+	return '<a href="'+row.head_img+'" target="_blank"><img src="'+row.headimgurl+'" style="width:64px; height:64px;"></a>';
+}
+
+(function(){   
+	var $modal = $('#memberModel');
+	var $table = $('#memberModel table');
+	
+	$table.gridView();
+	$modal.modal();
+	
+	//确定按钮 修改pid
+	$modal.find('.js-ok').on('click', function(){
+		var current = $table.bootstrapTable('getSelections');
+		if(current.length == 0) return alert('请点击选择代理！'), false;
+		
+		var $btn = $(this)
+		   ,type = $btn.hasClass('js-out') ? 'leave_out' : 'change_pid';
+		if(!confirm('数据不可恢复，确定'+(type == 'leave_out' ? '离职': '修改上级')+'吗？')) return false;
+		
+		var data = {id: current[0].id, type: type,change_mid: {$change_mid}};
+		$.ajax({
+			 url: '__URL__/member_out',
+			 type: 'post',
+			 dataType: 'json',
+			 data: data,
+			 success: function(){
+				 $modal.modal('hide');
+			 }
+		 });
+		return false;
+	});
+})();
+</script>

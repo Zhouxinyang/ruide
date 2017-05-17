@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<include file="_layout/mall.head.html" />
+	<style type="text/css">
+	.tobe3{margin-bottom: 56px; }
+	.add-kefu{}
+	.add-kefu .rule-dd{text-align: center;}
+	.add-kefu .rule-dd .paragraph{text-indent: 0;}
+	.add-kefu .rule-dd img{width: 80%;}
+	</style>
+</head>
+<body>
+	<div class="container rule-container">
+		<div class="content">
+			<img src="__CDN__/img/rule/rule-header.png" style="width: 100%" alt="我要当老板">
+			<ul class="rule-list">
+				<li class="rule-list-item add-kefu" id="add_kefu" style="{$agent_level==0 ? 'display:none;':''}">
+					<dl class="rule-dl">
+						<dt class="rule-dt"><h4>现在我该怎么做？</h4></dt>
+						<dd class="rule-dd">
+							<p class="paragraph" style="text-indent: 0;">长按二维码添加我们的小视频号，带你赚钱带你飞！</p>
+							<img src="{$xiaoshipin}">
+						</dd>
+					</dl>
+					<div class="diamond-line"></div>
+				</li>
+				<li class="rule-list-item">
+					<dl class="rule-dl">
+						<dt class="rule-dt"><h4>为什么做会员？</h4></dt>
+						<dd class="rule-dd">
+							<p class="paragraph">不用租门店，不用招员工，不用装修交保证金，你就可以轻轻松松做老板。</p>
+						<p class="paragraph">省掉采购囤货烦恼，一键下单平台发货。</p>
+						<p class="paragraph">只要你有能力销售商品、推广平台，就能赚到高额利润。</p>
+					</dd>
+					</dl>
+					<div class="diamond-line"></div>
+				</li>
+				<li class="rule-list-item" style="display:none">
+					<dl class="rule-dl">
+						<dt class="rule-dt"><h4>成为会员的好处？</h4></dt>
+						<dd class="rule-dd">
+							<p class="paragraph">成为平台会员，您将享有中国微商界最低的价格。</p>
+							<p class="paragraph" style="line-height: 1.4em;">分享你的二维码给身边的朋友，他买货，你赚积分，会员和零售价的差价都归你。他充值成为会员，你立得200积分奖励。</p> 
+						</dd>
+					</dl>
+					<div class="diamond-line"></div>
+				</li>
+				<li class="rule-list-item">
+					<dl class="rule-dl">
+						<dt class="rule-dt"><h4>如何成为会员？</h4></dt>
+						<dd class="rule-dd">
+							<p class="paragraph">用户在微信公众号内充值{$agent.once_amount}元，即可成为{$agent.title}。</p>
+							<p class="paragraph">*本平台只接受微信支付，如若有人联系您以微信红包、微信转账、支付宝转账等方式交易，请一律视为骗子！</p>
+						</dd>
+					</dl>
+					<div class="diamond-line"></div>
+				</li>
+				<!-- 
+				<li class="rule-list-item">
+					<dl class="rule-dl">
+						<dt class="rule-dt"><h4>推荐好友的好处？</h4></dt>
+						<dd class="rule-dd">
+							<p class="paragraph">  您每成功推荐一个好友，即可得到{$agent.parent1_amount}积分作为推荐奖励。</p> 
+							<p class="paragraph" style="line-height: 1.4em;">  当您推荐的好友再推荐好友时，您作为他的2级推荐人，能获得{$agent.parent2_amount}积分作为间接推荐奖励。</p>
+							<p class="paragraph" style="line-height: 1.4em;">  当您的间接好友再推荐好友时，您作为他的3级推荐人，还能获得{$agent.parent3_amount}积分作为推荐奖励。</p>
+						</dd>
+					</dl>
+					<div class="diamond-line"></div>
+				</li>
+				 -->
+				<li class="rule-list-item">
+					<dl class="rule-dl">
+						<dt class="rule-dt"><h4>如何推荐好友？</h4></dt>
+						<dd class="rule-dd">
+							<p class="paragraph">  在公众平台点击“推荐好友”菜单，即可获得自己专属二维码。</p>
+							<p class="paragraph" style="line-height: 1.4em;">当有客户扫描您的推荐二维码，就会成功建立好友关系。</p> 
+						</dd>
+					</dl>
+					<div class="diamond-line"></div>
+				</li>
+			</ul>
+			<if condition="$agent_level eq 0">
+				<div class="tobe3">
+					<div class="white-round">充值{$agent.once_amount}元</div>
+					<h2 class="headline">成为{$agent.title}</h2>
+					<!-- <img src="__CDN__/img/rule/down-icon.png" alt="" style="width: 5.5%; margin-left: 47.25%"> -->
+					<a id="js-btn-pay" href="javascript:void(0);" class="become3-btn"><img src="__CDN__/img/rule/become3_btn.png" alt="成为三级代理"></a>
+				</div>
+			</if>
+		</div>
+	</div>
+	<include file="_layout/mall.footer.html" />
+	<script type="text/javascript">
+	require(['pay', 'jquery'], function(pay){
+		var $btn_wxpay = $('#js-btn-pay');
+		
+		var bindPay = function(data){
+			$btn_wxpay.unbind('click');
+			$btn_wxpay.on('click', function(){
+				pay.callpay(data, function(res){
+					if(res.errcode == 0){
+						paySuccess(data.tid);
+					}
+				});
+				return false;
+			}).trigger('click');
+		}
+		
+		$btn_wxpay.on('click', function(){
+			$btn_wxpay.attr('disabled', 'disabled');
+			$.ajax({
+				url: '/h5/pay/payagent',
+				type: 'post',
+				dataType: 'json',
+				success: function(data){
+					bindPay(data);
+				},
+				complete: function(){
+					$btn_wxpay.removeAttr('disabled');
+				}
+			});
+			
+			return false;
+		})
+	});
+
+	var user = {:json_encode($user)};
+	function editPersonal(){
+		require(['view/personal/edit'], function(view){
+			view.show(user, function(data){
+				$.ajax({
+					url: '/h5/personal/save',
+					data: {data:data},
+					type: 'post',
+					dataType: 'json',
+					success: function(){
+						user = data;
+					}
+				});
+			});
+		});
+	}
+	
+	// 支付成功
+	function paySuccess(tid){
+		//充值成功后发送提醒消息
+		$.ajax({
+			url: '/h5/pay/agetnMessage',
+			data: {tid:tid},
+			type: 'post'
+		});
+
+		$('.tobe3').hide();
+		$('#add_kefu').show();
+		$('#confirm-pay-way-opts').remove();
+		alert('请完善个人资料并仔细阅读本页内容！');
+		editPersonal();
+	}
+	</script>
+</body>
+</html>

@@ -1,0 +1,88 @@
+<style>
+.tags{}
+.tags .checkbox{width:100px;margin:0}
+.tags .radio.inline+.radio.inline, .tags .checkbox.inline+.checkbox.inline{margin:0}
+</style>
+<form action="__ACTION__" class="form-horizontal edit-form" data-validate="true" data-submit="ajax" method="post" data-success="back">
+	<input name="banner_id" value="{$data.id}" type="hidden">
+	<div class="form-group">
+		<div class="form-item">
+			<div class="control-group ">
+				<label class="control-label must">标题</label>
+				<div class="controls">
+					<input type="text" name="title" class="required" value="{$data.title}" maxlength="100" placeholder="100个字符以内">
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label">跳转链接</label>
+				<div class="controls">
+					<input name="url" type="text" value="{$data.url}">
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label">排序</label>
+				<div class="controls">
+					<input name="sort" type="text" class="number" value="{$data.sort}">
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label">是否显示</label>
+				<div class="controls">
+					<label class="radio inline"><input type="radio" checked="checked" name="is_show" value="1">显示</label>
+					<label class="radio inline"><input type="radio" {$data['is_show'] == '0'?'checked="checked"':''} name="is_show" value="0">隐藏</label>
+				</div>
+			</div>
+		</div>
+		<div class="form-item">
+			<div class="control-group">
+			  	<label class="control-label">图片</label>
+			  	<div class="controls">
+					<input class="hide" type="hidden" name="img_url" value="{$data.img_url}">
+					<img id="img_url" src="{$data.img_url}" class="img-polaroid btn-up" alt="封面" style="width: 120px; height: 120px;cursor:pointer">
+				</div>
+		  	</div>
+			<div class="control-group">
+				<label class="control-label">首页展示</label>
+				<div class="controls">
+					<label class="radio inline"><input type="radio" checked="checked" name="home" value="1">顶部</label>
+					<label class="radio inline"><input type="radio" {$data['home'] == '2'?'checked="checked"':''} name="home" value="2">底部</label>
+					<label class="radio inline"><input type="radio" {$data['home'] == '0'?'checked="checked"':''} name="home" value="0">隐藏</label>
+				</div>
+			</div>
+		</div>
+		
+		<div class="control-group">
+			<label class="control-label">其他位置</label>
+			<div class="controls tags">
+				<label class="checkbox inline" style="color:#f60">
+					<input type="checkbox" value="1" name="personal"{$data['personal'] ? ' checked="checked"' : ''}>个人中心
+				</label>
+				<foreach name="tags" item="tag">
+					<label class="checkbox inline">
+						<input type="checkbox" value="{$tag.id}" name="seat[]"<php>in_array($tag['id'],explode(',',$data['seat'])) && print('checked="checked"');</php>>{$tag.name}
+					</label>
+				</foreach>
+			</div>
+		</div>
+	</div>
+	<div class="form-actions">
+	  <button type="button" class="btn btn-back">返回</button>
+	  <button type="submit" class="btn btn-primary">保存</button>
+	</div>
+</form>
+<script type="text/javascript" src="/ueditor/ueditor.config.js"></script>
+<script type="text/javascript" src="/ueditor/ueditor.all.min.js"></script>
+<div style="display: none;" id="editor" class="edui-default"></div>
+<script>
+$(function(){
+	var editor = UE.getEditor('editor',{isShow: false});
+	var $img = $('#img_url');
+	editor.addListener('beforeInsertImage', function (t, list) {
+		$img.prev().val(list[0]['src']);
+		$img.attr('src', list[0]['src']);
+    });
+	$img.on('click', function(){
+		editor.getDialog("insertimage").open();
+	});
+});
+</script>

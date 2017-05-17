@@ -1,0 +1,93 @@
+<toolbar id="toolbar">
+	<form class="edit-form form-horizontal">
+		<input type="hidden" name="pid" class="js-pid">
+		<div class="filter-groups">
+			<div class="control-group">
+				<label class="control-label">店铺名称</label>
+				<div class="controls">
+					<input type="text" name="name" data-search="true">
+				</div>
+			</div>
+		</div>
+		<div class="filter-groups">
+			<div class="control-group">
+				<label class="control-label">店铺类别</label>
+				<div class="controls">
+					<select name="type">
+						<option value="">全部</option>
+						<foreach name="allType" key="id" item="name">
+						<option value="{$id}">{$name}</option>
+						</foreach>
+					</select>
+				</div>
+			</div>
+		</div>
+	</form>
+</toolbar>
+
+<!-- 表格 -->
+<table id="table" data-toggle="gridview" class="table table-hover" data-url="__ACTION__" data-toolbar="#toolbar">
+    <thead>
+		<tr>
+			<th data-width="40" data-checkbox="true"></th>
+			<th data-width="200" data-field="name">店铺名称</th>
+			<th data-width="80" data-field="type" data-formatter="formatter_type">店铺类别</th>
+			<th data-width="100" data-field="contacts">联系人</th>
+			<th data-width="110" data-field="mobile">联系电话</th>
+			<th data-field="address" data-formatter="formatter_address">店铺地址</th>
+			<th data-width="200" data-align="right" data-formatter="formatter_action">操作</th>
+		</tr>
+	</thead>
+</table>
+
+<script src="__CDN__/js/address.js"></script>
+<script>
+var shopType = {:json_encode($allType)};
+function formatter_type(val){
+	return shopType[val];
+}
+
+function formatter_address(val, row){
+	return Address.get(row.city_id) + ' ' + Address.get(row.county_id)
+}
+
+var access = [];
+var $access = $('#toolbar>.btn-list').find('button[data-name="edit"],button[data-name="delete"]');
+for(var i=0; i<$access.length; i++){
+	access.push($access.eq(i).attr('data-name'));
+}
+function formatter_action(val, row, index){
+	var action = [];
+	
+	if(access.indexOf('edit') > -1){
+		action.push('<a href="__URL__/edit?id='+row.id+'">编辑</a>');
+	}
+
+	if(access.indexOf('delete') > -1){
+		action.push('<a href="javascript:;" class="js-delete" data-id="'+row.id+'">删除</a>');
+	}
+	
+	action.push('<a href="__MODULE__/goods?shop_id='+row.id+'">商品</a>');
+	return action.join(' - ');
+}
+(function(){
+	var $table = $('#table');
+	$table.on('click', '.js-delete',function(){
+		if(!confirm('操作不可恢复，确定删除吗？')){
+			return false;
+		}
+
+		var id = $(this).data('id');
+		$.ajax({
+			url: '__URL__/delete',
+			type: 'post',
+			datatType: 'json',
+			data: {id: id},
+			success: function(){
+				$table.gridView('refresh');
+			}
+		});
+		return false;
+	});
+})();
+</script>

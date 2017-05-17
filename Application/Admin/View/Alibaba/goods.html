@@ -1,0 +1,83 @@
+<div id="goodsModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal"
+			aria-hidden="true">×</button>
+		<h3 id="myModalLabel">{$shopName}</h3>
+	</div>
+	<div class="modal-body" style="padding: 0 15px;margin-top: -1px;">
+		<table class="table" style="margin-bottom: 0;">
+			<tr>
+				<th>1688商品</th>
+				<th>阿里同步</th>
+				<th style="text-align:center">阿里商品</th>
+				<th>平台同步</th>
+				<th style="text-align:center">平台商品</th>
+			</tr>
+			<foreach name="list" key="tao_id" item="item">
+			<tr data-id="{$tao_id}">
+				<td><a href="https://detail.1688.com/offer/{$tao_id}.html" target="_blank">{$tao_id}</a></td>
+				<td>{$item.last_sync}</td>
+				<td style="text-align:center">
+					<if condition="$item['action'] eq 'add'">
+						<a class="label label-warning js-add">添加</a>
+					<elseif condition="$item['action'] eq 'hidden'"/>
+						<a class="label label-important js-edit">下架</a>
+					<elseif condition="$item['action'] eq 'sync'"/>
+						<a class="label label-important js-edit">同步</a>
+					</if>
+				</td>
+				<td>
+					<if condition="$item['is_del'] neq '1'">{$item.last_update}</if>
+				</td>
+				<td>
+					<if condition="$item['action'] neq 'add'">
+						<?php if ( $item['is_display'] === '' ) { ?>
+							<a class="label label-warning" href="__MODULE__/goods/add?tao_id={$tao_id}">添加</a>
+						<?php }elseif ( $item['is_display'] == 0 ) { ?>
+							<a class="label label-warning" href="__MODULE__/goods/edit?id={$item.id}">上架</a>
+						<?php }elseif ( $item['is_display'] == 1 ) { ?>
+							<a class="label label-important" href="__MODULE__/goods/edit?id={$item.id}">同步</a>
+						<?php } ?>
+					</if>
+				</td>
+				<!--td>{$item['sys_notice']}</td-->
+			</tr>
+			</foreach>
+		</table>
+	</div>
+	<div class="modal-footer">
+		<button type="button" class="btn" data-dismiss="modal" aria-hidden="true">关闭</button>
+    	<a type="button" class="btn btn-primary" href="__MODULE__/goods?shop_id={$shop.id}">商品管理</a>
+	</div>
+	
+	<script>
+	(function(){
+		var $modal = $('#goodsModal');
+		$modal.modal({backdrop: 'static'}).on('hidden', function(){
+			$modal.remove();
+			return false;
+		});
+		
+		$modal.on('click', '.js-add', function(){
+			var tao_id = $(this).parents('tr:first').data('id');
+			$.ajax({
+				url: '__MODULE__/alibaba/syncGoods?tao_id=' + tao_id,
+				dataType: 'json',
+				success: function(goods){
+					window.open('__MODULE__/goods/add?tao_id='+tao_id);
+				}
+			});
+			return false;
+		}).on('click', '.js-edit', function(){
+			var tao_id = $(this).parents('tr:first').data('id');
+			$.ajax({
+				url: '__MODULE__/alibaba/syncGoods?tao_id=' + tao_id,
+				dataType: 'json',
+				success: function(goods){
+				}
+			});
+			return false;
+		});
+	})();
+	</script>
+</div>

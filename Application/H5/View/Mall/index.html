@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <include file="_layout/mall.head.html" />
+</head>
+<body class="body-fixed">
+    <div class="container">
+        <div class="content">
+            <div class="content-body">
+                <if condition="$show_watch_weixin">
+                <include file="_layout/mall.subscribe.html" />
+                </if>
+                <include file="_layout/mall.search.html" />
+                <notempty name="topbanners">
+                 <div class="scale_wh scale_4_3">
+                     <div class="scale_content">
+                        <div class="js-banner swiper-container">
+                            <div class="swiper-wrapper">
+                                <foreach name="topbanners" item="item">
+                                <div class="swiper-slide"><a href="{$item.url|default='javascript:;'}"><img src="{$item.img_url}"></a></div>
+                                </foreach>
+                            </div>
+                            <div class="pagination rectangle"></div>
+                        </div>
+                     </div>
+                </div>
+                </notempty>
+                <section class="table-nav">
+                    <table>
+                        <tr>
+                            <td><a href="/h5/list?shop_id=1" class="hot"><img src="__CDN__/img/mall/tag_shop_1.png"/><p>微商爆款</p></a></td>
+                            <td><a href="/h5/list?tag_id=10013"><img src="__CDN__/img/mall/tag_10013.jpg"/><p>手机周边</p></a></td>
+                            <td><a href="/h5/list?tag_id=10005"><img src="__CDN__/img/mall/tag_watch.png"/><p>手表专区</p></a></td>
+                            <td><a href="/h5/list?tag_id=10015"><img src="__CDN__/img/mall/tag_jinkou.jpg"/><p>海外进口</p></a></td>
+                        </tr>
+                        <tr>
+                            <td><a href="/h5/list?tag_id=10006"><img src="__CDN__/img/mall/tag_muying.png"/><p>母婴专区</p></a></td>                
+                            <td><a href="/h5/list?tag_id=10008"><img src="__CDN__/img/mall/tag_car.png"/><p>汽车用品</p></a></td>
+                            <td><a href="/h5/list?tag_id=10007"><img src="__CDN__/img/mall/tag_huoji.png"/><p>火机专区</p></a></td>
+                            <td><a href="/h5/category" class="new"><img src="__CDN__/img/mall/icon_category.png"/><p>分类</p></a></td>
+                        </tr>
+                    </table>
+                </section>
+                <div class="split-line"></div>
+                <include file="_layout/mall.news.html" />
+                <div class="split-line"></div>
+                <section class="horizontal-view">
+                    <a href="/h5/goods?id=2358" style="width:37.5%;display:block">
+                        <img src="__CDN__/img/mall/ddwdb.jpg?modify=20161203" style="width:100%">
+                    </a>
+                    <div class="vertical-view" style="width:62.5%">
+                        <a href="/h5/list?tag_id=1001" style="display:block">
+                            <img src="__CDN__/img/mall/home_pintuan.jpg" style="width:100%">
+                        </a>
+                        <div class="horizontal-view">
+                            <a href="/h5/list?tag_id=score" style="display:block;width:50%">
+                                <img src="__CDN__/img/mall/home_score.jpg" style="width:100%">
+                            </a>
+                            <a href="/h5/list?tag_id=1002" style="display:block;width:50%">
+                                <img src="__CDN__/img/mall/home_1002.jpg" style="width:100%">
+                            </a>
+                        </div>
+                    </div>
+                </section>
+                <div class="split-line"></div>
+                <if condition="count($bottombanners) gt 0">
+                <!-- 底部大图广告 -->
+                <section class="bottom-banner">
+                <foreach name="bottombanners" item="item">
+                    <a href="{$item.url|default='javascript:;'}" class="scale_content">
+                        <img src="{$item.img_url}">
+                    </a>
+                </foreach>
+                </section>
+                <div class="split-line"></div>
+                </if>
+                <!--商品列表-->
+                <section>
+                    <div class="hr-text"><div class="text">猜你喜欢</div></div>
+                    <ul class="js-goods-list sc-goods-list pic clearfix size-2">
+                        <li><div class="empty-list list-finished"><p class="font-size-12">正在加载中...</p></div></li>
+                    </ul>
+                </section>
+            </div>
+        </div>
+        <include file="_layout/mall.copyright.html" />
+    </div>
+    <include file="_layout/mall.footer.html" />
+    
+    <script type="text/javascript">
+    require(['goods_list'], function(gv){
+        gv.start({
+            url: '/h5/mall/like',
+            container: '.js-goods-list',
+        });
+    });
+    
+    <if condition="count($topbanners) gt 1">
+    require(['swiper'], function(){
+        var mySwiper = new Swiper('.js-banner',{
+            autoplay : 5000,
+            loop : true,
+            autoplayDisableOnInteraction : true,
+            <if condition="count($topbanners) lt 8">pagination : '.js-banner .pagination'</if>
+        });
+    });
+    </if>
+    
+    require(['module/cart/num', 'search']);
+</script>
+</body>
+</html>

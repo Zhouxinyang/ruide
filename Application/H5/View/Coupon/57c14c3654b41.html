@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+	<include file="_layout/mall.head.html" />
+<literal>
+<style>
+body{background:#A9071E url(__CDN__/upload/coupon/1_2_3/bg.jpg) repeat-x fixed top;background-size:100%}
+.coupon-title{text-align:center;margin:30px 0}
+.coupon-title img{width:80%}
+.c-list{margin:30px 5px 30px 7px}
+.c-list .c-item{width:33%;float:left;border-right:1px solid transparent}
+.c-list .c-item img{width:100%}
+.c-notice{}
+.c-title{background:url(__CDN__/upload/coupon/1_2_3/bg_title.png) repeat-x;background-size:100% 60px;height:60px;text-align:center;line-height:60px;color:#FE5400}
+.c-notice .c-content{color:#fff;font-size:14px;line-height:18px;list-style-type:decimal;padding-left:30px}
+.shine_red{-webkit-animation-name:shineRed;-webkit-animation-duration:3s;-webkit-animation-iteration-count:infinite;width: 100px;background-color: #fff;height: 100px;border-radius: 50%;margin: 20px auto;}
+.shine_red .btn{width: 100%;height: 100%;border-radius: 50%;padding-top: 30px;}
+@-webkit-keyframes  shineRed {  
+from { -webkit-box-shadow: 0 0 20px #fff;}  
+40% { -webkit-box-shadow: 0 0 120px #fff; }	
+60% { -webkit-box-shadow: 0 0 60px #fff; }		
+80% { -webkit-box-shadow: 0 0 120px #fff; }	
+to {  -webkit-box-shadow: 0 0 20px #fff; }  	 
+}
+.c-footer{}
+.c-footer .nav-menu-1 {border-top: 1px solid #db0c02;background: no-repeat #A9071E;}
+.c-footer .nav-menu-1 .nav-item+.nav-item {border-left: 1px solid #db0c02;}
+.c-footer .nav-menu-1 a{color:#fff}
+.c-footer .home{background-color:#A9071E;background-blend-mode: screen, overlay;}
+</style>
+</literal>
+</head>
+<body class="body-fixed-bottom">
+	<div class="container">
+		<div class="content">
+		    <if condition="$member['subscribe'] eq 0">
+            <h2 class="c-title">关注我们</h2>
+            <div style="text-align:center">
+                <img src="{$qrcode}" style="width:70%">
+            </div>
+            </if>
+			<div class="coupon-title">
+			 	<img src="__CDN__/upload/coupon/1_2_3/title.png">
+			</div>
+			<div class="js-coupons c-list clearfix">
+				<div class="c-item">
+					<img src="__CDN__/upload/coupon/1_2_3/10yuan.jpg">
+				</div>
+				<div class="c-item">
+					<img src="__CDN__/upload/coupon/1_2_3/20yuan.jpg">
+				</div>
+				<div class="c-item">
+					<img src="__CDN__/upload/coupon/1_2_3/50yuan.jpg">
+				</div>
+			</div>
+			<div class="c-notice">
+				<h2 class="c-title">优惠券说明</h2>
+				<ul class="c-content">
+					<li>每个账户仅可领取一次，默认一次性全领取</li>
+					<li>代金券累计优惠100元整，每笔订单只能使用一张</li>
+					<li>10元代金券共3张， 单笔订单满50元即可使用</li>
+					<li>20元代金券共1张，单笔订单满100元即可使用</li>
+					<li>50元代金券共1张，单笔订单满200元即可使用</li>
+					<li>代金券不找零、不兑现、逾期未使用将作废</li>
+					<li>活动有效期截止2017年03月01日 23:59</li>
+					<li>本代金券不能和其他优惠一起使用</li>
+					<li>下单即自动使用并作废，交易取消也被视为使用</li>
+					<li>数量有限，先领先得！充值成会员优惠更多哦~</li>
+				</ul>
+			</div>
+			<div class="shine_red">
+				<a class="btn js-coupons" href="javascript:;" style="line-height:40px">一键领取</a>
+			</div>
+			<h2 class="c-title">精选商品</h2>
+			<ul class="js-goods-list sc-goods-list pic clearfix size-2"></ul>
+		</div>
+	</div>
+	<div class="c-footer">
+		<include file="_layout/mall.footer.html" />
+	</div>
+	<script>
+	require(['jquery'], function(){
+		$('.js-coupons').on('click', function(){
+			$.ajax({
+				url: '__ACTION__',
+				type: 'post',
+				dataType: 'json',
+				waitting: '领取中',
+				success: function(){
+					$('.js-coupons').unbind('click').on('click', function(){
+						alert('已领取');
+						return false;
+					});
+				}
+			});
+			return false;
+		});
+	});
+	
+	require(['goods_list'], function(gv){
+        gv.start({
+            url: '/h5/mall/like',
+            container: '.js-goods-list',
+        });
+    });
+	</script>
+</body>
+</html>

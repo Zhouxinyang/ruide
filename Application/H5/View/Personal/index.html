@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <include file="_layout/mall.head.html" />
+    <link rel="stylesheet" href="__CDN__/css/usercenter.css?modify=20160921" type="text/css" />
+</head>
+<body class="body-fixed-bottom">
+    <div class="container">
+        <div class="content ">
+            <div class="content-body">
+                <div class="personal-header">
+                    <div class="advertisement">
+                        <foreach name="advs" item="item">
+                        <a href="{$item.url}" class="ellipsis" target="_blank">{$item.title}</a>
+                        </foreach>
+                    </div>
+                    <div class="headimg js-headimgurl">
+                        <div style="background-image: url({$user.headimgurl});" class="headimg-url"></div>
+	                </div>
+	                <div style="display: block;text-align: center;color: #fff;margin: 10px 0;">{$user.nickname}({$user.agent_title}ID:{$user.id})</div>
+	                <div class="balance-info">
+                        <a href="/h5/balance" class="balance-value">积分余额：¥{$user.total_balance}</a>
+                        <a href="javascript:;" class="js-sign everyday-sign pull-right">领积分</a>          
+	                </div>
+                </div>
+                <div class="order-info clearfix">
+			        <a href="/h5/order" class="order-item">
+			            <i class="icon-links icon1_1"></i>
+			            <span class="title">全部订单</span>
+			            <span class="num">{$order.total}</span>
+			        </a>
+			        <a href="/h5/order?status=topay" class="order-item">
+			            <i class="icon-links icon1_2"></i>
+			            <span class="title">待付款</span>
+			            <span class="num">{$order.topay}</span>
+			        </a>
+			        <a href="/h5/order?status=tosend" class="order-item">
+			            <i class="icon-links icon1_3"></i>
+			            <span class="title">待发货</span>
+			            <span class="num">{$order.tosend}</span>
+			        </a>
+			        <a href="/h5/order/?status=refund" class="order-item">
+			            <i class="icon-links icon1_4"></i>
+			            <span class="title">退换货</span>
+			            <span class="num">{$order.torefund}</span>
+			        </a>
+			    </div>
+
+                <div class="order-related">
+                    <div class="block block-list list-vertical">
+                        <a class="block-item link ico-record" href="/h5/cart">
+                            <p class="title-info c-black">我的购物车</p>
+                        </a>
+                        <a class="block-item link ico-backs" href="/h5/balance">
+                            <p class="title-info c-black">积分提现</p>
+                        </a>
+                    </div>
+                    <div class="block block-list list-vertical">
+                        <a class="block-item link ico-friend" href="/h5/personal/friends">
+                            <p class="title-info c-black">我的好友</p>
+                        </a>
+                        <a class="block-item link ico-member" href="/h5/pay/rule">
+                            <p class="title-info c-black">成为会员</p>
+                        </a>
+                    </div>
+                    <div class="block block-list list-vertical">
+                        <a class="block-item link ico-coupon" href="/h5/coupon">
+                            <p class="title-info c-black">优惠卡券</p>
+                        </a>
+                        <a class="block-item link ico-collection" href="/h5/collection">
+                            <p class="title-info c-black">我的收藏</p>
+                        </a>
+                        <!-- 
+                        <a class="block-item link ico-gift" href="javascript:toast.show('正在开发中');">
+                            <p class="title-info c-black">我的赠品</p>
+                        </a>
+                         -->
+                    </div>
+                    <div class="block block-list">
+                        <a class="block-item link center" href="javascript:win.close()">
+                            <p class="title-info c-black">退出系统</p>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+   		<include file="_layout/mall.copyright.html" />
+        <include file="_layout/mall.footer.html" />
+    </div>
+</body>
+    <script>
+    require(['jquery'], function(){
+        var user = {:json_encode($user)};
+        $('.js-headimgurl').on('click', function(){
+            require(['view/personal/edit'], function(view){
+                view.show(user, function(data){
+                    $.ajax({
+                        url: '/h5/personal/save',
+                        data: {data:data},
+                        type: 'post',
+                        datatype: 'text',
+                        success: function(){
+                            user = $.extend(user, data);
+                        }
+                    });
+                })
+            });
+            return false;
+        });
+        
+        // 领积分
+        $('.js-sign').on('click', function(){
+        	var $this = $(this);
+        	$.ajax({
+        		url: '/h5/personal/sign',
+        		type: 'post',
+        		dataType: 'json',
+        		success: function(data){
+        			toast.show('连续签到'+data.continued+'次');
+        			$this.siblings('.balance-value').html('积分余额：¥' + (data.balance*1 + data.no_balance*1).toFixed(2));
+        		}
+        	});
+        	return false;
+        });
+    });
+    </script>
+</html>

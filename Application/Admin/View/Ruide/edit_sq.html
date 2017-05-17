@@ -1,0 +1,59 @@
+<form method="post" action="__ACTION__" data-validate="true" data-continue="true" data-submit="ajax" class="form-horizontal edit-form" novalidate="novalidate">
+    <div class="form-group">
+        <div class="form-item">
+            <div class="control-group">
+                <input type="text" class="hidden" name="data[id]" value="{$data['id']}">
+                <input type="text" class="hidden" name="data[rd_uid]" value="{$data['rd_uid']}">
+
+                <label class="control-label must">项目</label>
+                <div class="controls">
+                    <input class="required" type="text" name="data[product]" maxlength="15" value="{$data.product}" placeholder="最多15个字符"}>
+                </div>
+            </div>
+
+            <div class="control-group">
+                <label class="control-label must">职位</label>
+                <div class="controls">
+                    <input type="text" name="data[position]" required="required" value="{$data.position}" maxlength="30" placeholder="最多30个字符">
+                </div>
+            </div>
+            <div class="form-item">
+                <div class="control-group">
+                    <label class="control-label">修改授权书</label>
+                    <div class="controls">
+                        <input class="hide" type="data[show]" required="required" name="data[show]" value="{$data.show}" readonly="readonly" data-msg-required="请上传logo">
+                        <img id="auth_show" src="{$data.show}"  class="img-polaroid btn-up" alt="logo" style="width: 64px; height: 64px;">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">保存</button>
+                <a href="http://www.fywc.com/admin/ruide/check?id={$data['rd_uid']}" class="btn">取消</a>
+            </div>
+        </div>
+        </div>
+</form>
+<script src="/js/address.js"></script>
+<script type="text/javascript" src="/ueditor/ueditor.config.js"></script>
+<script type="text/javascript" src="/ueditor/ueditor.all.min.js"></script>
+<div style="display: none;" id="editor" class="edui-default"></div>
+<script>
+    $(function(){
+        var editor = UE.getEditor('editor',{isShow: false})
+        $('#auth_show').on('click', function(){
+            var $img = $(this);
+            var $input_url = $img.prev();
+            editor.removeListener('beforeInsertImage');
+            editor.addListener('beforeInsertImage', function (t, list) {
+                $input_url.val(list[0]['src']);
+                $img.attr('src', list[0]['src']);
+                console.log($input_url.val());
+            });
+
+            editor.getDialog("insertimage").open();
+        });
+    });
+</script>

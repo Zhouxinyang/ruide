@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <include file="_layout/mall.head.html" />
+<literal>
+<style>
+.goods-header .goods-price{padding:5px 10px 2px;text-align:left}
+.current-price{color:#f0342b;display:inline-block;font-size:18px}
+.original-price{display:inline-block;font-size:12px;margin-left:10px;text-decoration:line-through;color:#ddd}
+.other-info{background-color:#fff;padding:0 10px}
+.other-info dl{margin:8px 0;width:50%;float:left}
+.other-info dt{float:left;color:#999}
+.other-info dd{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.goods-detail{margin-top:10px}
+.tabber button.active,.tabber a.active{position:relative;top:1px;line-height:39px}
+.tabber button,.tabber a{float:left;width:33.33%;height:40px;line-height:40px;border:0px none;outline:0px none;background-color:#fff;text-align:center;text-overflow:ellipsis;white-space:nowrap;overflow:hidden}
+.custom-richtext{-webkit-box-sizing:border-box;-moz-box-sizing:border-box;box-sizing:border-box;font-size:16px;color:#333;overflow:hidden;text-align:left;word-wrap:break-word;overflow-x:auto}
+.block-list-traderecord{padding-left:0;margin-bottom:30px;background-color:#fff;width:100%;border-top:0px none}
+.block-list-traderecord .list-header{padding:0 10px;height:33px;line-height:33px;background-color:#f2f2f2;border-bottom:2px solid #e5e5e5;border-bottom-width:1px;display:table;width:100%;-webkit-box-sizing:border-box;-moz-box-sizing:border-box;box-sizing:border-box}
+.block-list-traderecord .list-header .col-1{text-indent:12px}
+.block-list-traderecord .list-header .col-1,.block-list-traderecord .block-item .col-1{width:34%}
+.block-list-traderecord .list-header span,.block-list-traderecord .block-item span{display:table-cell;font-size:12px}
+.block-list-traderecord .list-header .col-2,.block-list-traderecord .block-item .col-2{width:33%}
+.block-list-traderecord .list-header .col-3,.block-list-traderecord .block-item .col-3{width:33%}
+.block-list-traderecord .list-header,.block-list-traderecord .block-item{display:table;width:100%;-webkit-box-sizing:border-box;-moz-box-sizing:border-box;box-sizing:border-box}
+.block-list-traderecord .block-list{border-top-width:0;border-bottom-width:0}
+.custom-richtext img{max-width:100%;display:block}
+.custom-store .custom-store-link{display:block}
+.custom-store .custom-store-img{position:absolute;top:11px;left:0;height:18px;width:18px;background:url(/img/mall/goods@2x_c9431a6d41.png) -40px 0 no-repeat;background-size:58px 48px}
+.custom-store .custom-store-name{float:left;padding:0 0 0 25px;height:22px;line-height:22px;font-size:14px;color:#333;max-width:210px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.custom-store .custom-store-enter{float:right;height:14px;line-height:14px;margin:4px 0;font-size:12px;color:#999;padding-right:15px}
+.goods-store.block-list .renzheng .rz-item{padding-right:16px;white-space:nowrap}
+.goods-store.block-list .offline-store .offline-store-img{display:inline-block;vertical-align:middle;width:18px;height:18px;background-position:0 -30px;background-image:url("/img/mall/goods@2x_c9431a6d41.png");background-repeat:no-repeat;background-size:58px 48px}
+.goods-store.block-list .renzheng .rz-item::before,.goods-store.block-list .offline-store .offline-store-img{background-image:url("/img/mall/goods@2x_c9431a6d41.png");background-repeat:no-repeat;background-size:58px 48px}
+.goods-store.block-list .renzheng .rz-item::before{content:'';display:inline-block;vertical-align:middle;width:13px;height:13px;background-position:-18px -30px}
+.goods-store.block-list .renzheng .rz-item.false::before{background-position:-33px -30px}
+.bottom-fix{padding:0}
+.components-container{background-color:#fff}
+#J_MlhPriceBar{position:relative}
+#J_MlhPriceBar .active-tag{position:absolute;top:-18px;background-color:#ff4343;z-index:1;color:#fff;padding:6px 8px;border-top-right-radius:3px}
+#J_MlhPriceBar .price_time{position:relative;height:50px;background-color:#EEE;overflow:hidden;color:#fff}
+.range_price{padding:5px !important;height:36px;line-height:18px;font-size:12px}
+.range_price span{display:none}
+.range_price dl{float:left;text-align:center}
+.range_price_1{display:none}
+.range_price_2{height:18px}
+.range_price_2 span{display:inline}
+.range_price_2 dt{float:left}
+.range_price_2 dd{float:left}
+#J_MlhPriceBar .subleft.avil,#J_MlhPriceBar .subleft.soldout{background:#ff4343}
+#J_MlhPriceBar .subleft.nobegin{background:#333}
+#J_MlhPriceBar .subleft.timeout{background:#888}
+#J_MlhPriceBar .subleft{position:relative;margin-right:100px;height:50px}
+#J_MlhPriceBar .subleft .price{padding:0 10px;display:inline-block;height:50px;line-height:50px;vertical-align:text-bottom;font-size:14px}
+#J_MlhPriceBar .subleft .price strong{font-size:18px;font-weight:400}
+#J_MlhPriceBar .subleft .information{position:absolute;top:0;display:inline-block;color:rgba(255,255,255,.7)}
+#J_MlhPriceBar .subleft .information .oprice{margin-top:9px;padding:0 4px;height:16px;line-height:16px;font-size:12px}
+#J_MlhPriceBar .subleft .information .oprice del{padding-left:2px;text-decoration:line-through}
+#J_MlhPriceBar .subleft .information .soldcount{margin-top:-2px;display:inline-block;padding:0 6px;height:18px;line-height:18px;font-size:11px;-webkit-border-radius:3px;background:#f0342b}
+.nobeginbar .subleft .information .soldcount{background:rgba(255,255,255,.15)!important}
+#J_MlhPriceBar .subleft .information .soldcount span{color:#fff;font-size:12px;padding-right:3px}
+#J_MlhPriceBar .subleft.avil:after,#J_MlhPriceBar .subleft.soldout:after{border-top-color:#ff4343;border-bottom-color:#ff4343}
+#J_MlhPriceBar .subleft.nobegin:after{border-top-color:#333;border-bottom-color:#333}
+#J_MlhPriceBar .subleft:after{content:"";position:absolute;left:100%;display:inline-block;width:0;height:0;border-right:12px solid transparent;border-bottom:25px solid #f61d4b;border-top:25px solid #333;border-bottom:27px solid #333}
+#J_MlhPriceBar .countdown{position:absolute;right:0;top:8px;width:90px;height:50px;text-align:center}
+#J_MlhPriceBar .countdown .txt{height:16px;text-align:center;line-height:16px;font-size:12px;color:#1A1A1A}
+#J_MlhPriceBar .countdown .clockrun{margin:2px 0 0 5px;height:20px;line-height:20px;text-align:center;font-size:12px;color:#fff}
+#J_MlhPriceBar .countdown .clockrun .tuan{color:#fff}
+#J_MlhPriceBar .countdown .clockrun .hideTime{display:none}
+#J_MlhPriceBar .countdown .clockrun .num{float:left;min-width:16px;height:16px;text-align:center;line-height:16px;background:#f0342b;border-radius:3px}
+#J_MlhPriceBar .countdown .clockrun .dot{float:left;width:4px;height:16px;line-height:18px;text-align:center;color:grey}
+#J_MlhPriceBar .price_time{background-color:#ff4343}
+#J_MlhPriceBar .countdown .clockrun{color:#fff}
+#J_MlhPriceBar .countdown .txt{color:#fff}
+#J_MlhPriceBar .countdown .clockrun .dot{color:#fff}
+#J_MlhPriceBar .countdown .clockrun .num{color:#ff4343;background-color:#fff}
+.activity-intro{background-color:rgba(255,102,0,0.05);border:none;margin:0}
+.activity-intro .title{padding:0 0 0 25px}
+.activity-intro .pull-right{margin-right:16px}
+.activity-intro .tag-img{position:absolute;top:11px;left:0;height:18px;width:18px}
+.goods-header{position:relative}
+.goods-header .see-active{height:25px;position:absolute;right:0;bottom:7px;text-align:center;background:red;color:#fff;line-height:25px;border-radius:15px 0 0 15px;padding:0 15px}
+.arrow{position:absolute;top:7.5px;right:5px}
+.arrow em{display:block;border-top:5px solid transparent;border-bottom:5px solid transparent;border-left:5px solid #fff}
+.arrow span{position:absolute;left:-2px;top:0;border-top:5px solid transparent;border-bottom:5px solid transparent;border-left:5px solid red}
+</style>
+</literal>
+    <if condition="$data['countdown']['end'] gt 0">
+    <script>
+    var start_time = {$data['countdown']['start']}000;
+    var end_time = {$data['countdown']['end']}000;
+    var timer{:time()} = window.setInterval(function(){
+        start_time += 1000;
+        
+        var leftTime=end_time - start_time; 
+        var leftsecond = parseInt(leftTime/1000); 
+        var day=Math.floor(leftsecond/(60*60*24)); 
+        var hour=Math.floor((leftsecond-day*24*60*60)/3600); 
+        var minute=Math.floor((leftsecond-day*24*60*60-hour*3600)/60); 
+        var second=Math.floor(leftsecond-day*24*60*60-hour*3600-minute*60); 
+        
+        if(leftTime == 0){
+            window.clearInterval(timer{:time()});
+            window.location.href = '__ACTION__?id={$data['id']}&modify='+start_time;
+        }
+        var html = 
+            '<span class="num">'+(day < 10 ? '0' + day : day)+'</span>'+
+            '<span class="dot">:</span>'+
+            '<span class="num">'+(hour < 10 ? '0' + hour : hour)+'</span>'+
+            '<span class="dot">:</span>'+
+            '<span class="num">'+(minute < 10 ? '0' + minute : minute)+'</span>'+
+            '<span class="dot">:</span>'+
+            '<span class="num">'+(second < 10 ? '0' + second : second)+'</span>';
+            document.getElementById('J_CountDownTxt').innerHTML = html;
+    }, 1000); 
+    </script>
+    </if>
+</head>
+<body class="body-fixed-bottom">
+     <div class="container wap-goods internal-purchase">
+        <div class="content ">
+            <div class="content-body">
+                <!-- 商品轮播图 -->
+                <div class="scale_wh scale_100">
+                    <div class="scale_content">
+                        <div class="js-banner swiper-container">
+                            <div class="swiper-wrapper">
+                                <foreach name="data['images']" item="url">
+                                <div class="swiper-slide"><img src="{$url}" /></div>
+                                </foreach>
+                            </div>
+                            <div class="swiper-tip">温馨提示：长按图片保存到手机</div>
+                            <div class="pagination"></div>
+                        </div>
+                    </div>
+                </div>
+                <notempty name="data['active']">
+                <div id="J_MlhPriceBar">
+                    <div class="active-tag">{$data['active']['tag_name']}</div>
+                    <div class="price_time">
+                        <div class="subleft avil">
+                            <div class="price">¥<strong>{$data['agents'][$user['agent_level']]['price']}</strong></div>
+                            <div class="information">
+                                <div class="oprice">¥<del>{$data['original_price'] > $data['price'] ? $data['original_price'] : $data['price']}</del></div>
+                                <div class="soldcount">
+                                    <span>已抢{$data['active']['sold']}件</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="countdown">
+                            <div class="txt">{$data['countdown']['txt']}</div>
+                            <div class="clockrun" id="J_CountDownTxt">
+                                <span class="num">00</span>
+                                <span class="dot">:</span>
+                                <span class="num">00</span>
+                                <span class="dot">:</span>
+                                <span class="num">00</span>
+                                <span class="dot">:</span>
+                                <span class="num">00</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="goods-header">
+                    <h2 class="title">{$data.title}</h2>
+                </div>
+                <div class="activity-intro block block-list border-0 top-0 bottom-0">
+                    <a class="clearfix block-item arrow-right" href="{$data['active']['rule_url']}">
+                        <img class="tag-img" src="{$data['active']['icon']}">
+                        <span class="title">活动规则</span>
+                        <span class="pull-right c-gray-dark">查看详情</span>
+                    </a>
+                    <notempty name="data['range_price']">
+                    <div class="block-item range_price range_price_{:count($data['range_price'])}">
+                        <foreach name="data['range_price']" key="num" item="price">
+                        <dl style="width:{:bcdiv(100, count($data['range_price']),2)}%">
+                            <dt>{$num}<span>件：</span></dt>
+                            <dd>¥{$price}</dd>
+                        </dl>
+                        </foreach>
+                    </div>
+                    </notempty>
+                </div>
+                <else />
+                <div class="goods-header">
+                    <h2 class="title">{$data.title}</h2>
+                    <div class="goods-price">
+                        <div class="current-price">
+                            <span style="font-size: 12px;">{$data['agents'][$user['agent_level']]['price_title']}：¥</span><i class="js-goods-price price">{$data['agents'][$user['agent_level']]['price']}</i>
+                        </div>
+                    </div>
+                    <notempty name="data['active_link']">
+                    <a href="{$data['active_link']}" class="see-active">查看活动
+                        <i class="arrow"><em></em><span></span></i>
+                    </a>
+                    </notempty>
+                </div>
+                </notempty>
+                <div class="other-info clearfix">
+                    <php>
+                    $_last_agent = end($data['agents']);
+                    if($user['agent_level'] == 0 && $_last_agent['price'] > 0){
+                        echo '<dl><dt>'.$_last_agent['price_title'].'：</dt><dd>'.$_last_agent['price'].'元</dd></dl>';
+                    }else if($data['agents'][0]['price'] > 0){
+                        echo '<dl><dt>'.$data['agents'][0]['price_title'].'：</dt><dd>'.$data['agents'][0]['price'].'元</dd></dl>';
+                    }else if($data['original_price'] > $data['price']){
+                        echo '<dl><dt>原　价：</dt><dd>'.$data['original_price'].'元</dd></dl>';
+                    }
+                    </php>
+                    <dl><dt>月销量：</dt><dd>{$data['sold_num']}件</dd></dl>
+                    <notempty name="data['send_place']">
+                    <dl><dt>发货地：</dt><dd>{$data.send_place}</dd></dl>
+                    </notempty>
+                    <dl><dt>单品重：</dt><dd>{$data['weight']}kg</dd></dl>
+                    <dl><dt>运　费：</dt><dd>{$data['freight_fee']['msg']}</dd></dl>
+                    <dl><dt>剩　余：</dt><dd>{$data.stock}件</dd></dl>
+                    <dl><dt>积分抵用：</dt><dd>{$data['score']}%</dl>
+                </div>
+                <div class="js-store-info">
+                    <div class="block block-list goods-store">
+                        <div class="custom-store block-item arrow-right">
+                            <a class="custom-store-link clearfix" href="/h5/list?shop_id={$data['shop_id']}">
+                                <div class="custom-store-img"></div>
+                                <div class="custom-store-name">{$data['shop_name']}</div>
+                                <span class="custom-store-enter">进入店铺</span>
+                            </a>
+                        </div>
+                        <div class="renzheng block-item c-gray-darker" style="text-align:center">
+                            <span class="js-rz-item-alert rz-item {$data['invoice'] ? '' : 'false'}" data-type="team_certificate_person">
+                                <span class="rz-name font-size-12">发票</span>
+                            </span>
+                            <span class="js-rz-item-alert rz-item {$data['warranty'] ? '' : 'false'}" data-type="is_secured_transactions">
+                                <span class="rz-name font-size-12">保修</span>
+                            </span>
+                            <span class="js-rz-item-alert rz-item {$data['returns'] ? '' : 'false'}" data-type="team_physical">
+                                <span class="rz-name font-size-12">退换</span>
+                            </span>
+                            <span class="js-rz-item-alert rz-item {$data['freight_fee'] == '包邮' ? '' : 'false'}" data-type="team_physical">
+                                <span class="rz-name font-size-12">包邮</span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 图文、成交记录 -->
+                <div class="js-tabber-container goods-detail">
+                    <div class="js-tabber tabber clearfix">
+                        <button data-type="goods" class="active" style="width:50%">商品详情</button>
+                        <button data-type="similar" data-id="{$data.id}" style="width:50%;color:black;" >同类推荐</button>
+                    </div>
+                    <div class="js-tabber-content">
+                        <div class="js-part js-goods-detail goods-tabber-c" data-type="goods">
+                            <notempty name="data['remote_area']">
+                                <div class="custom-notice text-center">此商品{$data['remote_area']}不发货</div>
+                            </notempty>
+                            <div class="block block-list">
+                                <if condition="($data['parameters']!='') and ($data['sku_json']!='')">
+                                <foreach name="data['sku_json']" key="spec_pid" item="item">
+                                <div class="block-item">
+                                    <label>{$item.text}:</label>
+                                    <span><foreach name="item['items']" item="val">{$val.text}&nbsp;</foreach></span>
+                                </div>
+                                </foreach>
+                                <if condition="($data['parameters']!='')">
+                                <foreach name="data['parameters']" item="item">
+                                <div class="block-item">
+                                    <label>{$item[0]}:</label>
+                                    <span>{$item[1]}</span>
+                                </div>
+                                </foreach>
+                                </if>
+                                </if>
+                            </div>
+                            <div class="js-components-container components-container">
+                                <div id="detail_container" class="custom-richtext">{$data['detail']}</div>
+                                <if condition="$data['shop_id'] eq 12753">
+                                <div style="text-align:center">
+                                <span style="color: #f90;">长按二维码观看韩国代购直播</span>
+                                <img src="__CDN__/upload/image/20161017/491778204446010346.jpg" style="width:80%">
+                                </div>
+                                <else />
+                                <div class="empty-list"><div><a class="js-lxkf tag tag-big tag-orange" data-type="2" href="javascript:;">获取小视频</a></div></div>
+                                </if>
+                            </div>
+                        </div>
+                        <div class="js-part hide" data-type="similar" style="margin-bottom:20px">
+                            <ul class="js-goods-list sc-goods-list pic clearfix size-2">
+                                <li><div style="padding:30px 0;text-align:center">正在加载中...</div></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="js-bottom-opts js-footer-auto-ele bottom-fix">
+                    <div class="sku-layout">
+                        <div class="content-foot clearfix">
+                            <a href="javascript:;" class="js-add-collect collect{$other['is_collection'] ? ' checked' : ''}" data-id="{$data.id}"></a>
+                            <a href="javascript:;" class="kefu js-lxkf" data-shop="{$data.shop_id}" data-goods="{$data.id}"></a>
+                            <a class="cart" href="/h5/cart"><b class="js-cart-num">{$other['cart_num']}</b><em id="J-addone">+1</em></a>
+                            <div class="actions actions-{:count($data['action'])} clearfix">
+                            <foreach name="data['action']" item="btn">
+                                <button id="btn_{$btn['id']}" type="button" class="btn {$btn['class']}">{$btn['txt']}</button>
+                            </foreach>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <include file="_layout/mall.copyright.html" />
+    </div>
+    <div id="right-icon" class="js-right-icon no-text" style="bottom:100px">
+        <div class="js-right-icon-container right-icon-container clearfix" style="width: 50px;">
+            <a id="global-back" href="javascript:win.back();" class="icon new s1"></a>
+    </div></div>
+</body>
+
+<script type="text/javascript">
+    // 购买/兑换
+    require(['skumodal'], function(ShoppingCart){
+        $('#btn_buyNow').on('click',function(){
+            var goods_id = this.getAttribute('data-id');
+            new ShoppingCart({
+                data: {id: {$data.id}, from: '{$data['active']['type']}'},
+                buttons:{'buyNow': '立即下单'},
+            });
+            return false;
+        });
+        
+        $('#btn_addCart').on('click',function(){
+            var goods_id = this.getAttribute('data-id');
+            new ShoppingCart({
+                data: {id: {$data.id}, from: '{$data['active']['type']}'},
+                buttons:{'addCart': '加入购物车', 'buyNow': '立即下单'},
+            });
+            return false;
+        });
+    });
+    
+    <if condition="IS_WEIXIN">
+    //分享
+    require(['jsweixin'], function(jweixin){
+       jweixin.init({$sign}, function(){
+            jweixin.share({$share_data});
+       });
+    });
+    </if>
+
+    requirejs(['jquery'], function(){
+        require(['swiper'], function(){
+            var mySwiper = new Swiper('.js-banner',{
+                autoplay : 5000,
+                loop : true,
+                autoplayDisableOnInteraction : true,
+                pagination : '.js-banner .pagination'
+            });
+
+            var $banner = $('.js-banner'),
+            $wrapper = $banner.children('.swiper-wrapper');
+            $banner.on('click', function() {
+                $banner.toggleClass('full-screen');
+                if($banner.hasClass('full-screen')){
+                    $wrapper.css('line-height', document.documentElement.clientHeight+'px');
+                }else{
+                    $wrapper.css('line-height', '');
+                }
+                return false;
+            });
+        });
+        
+        // 切换商品详情/成交记录
+        var $tabberContainer = $('.js-tabber-container'),
+        fixedTop = $tabberContainer.offset().top,
+        $tabber = $tabberContainer.children('.js-tabber');
+        $('.js-tabber>button').on('click', function(){
+            var $this = $(this);
+            $this.addClass('active').siblings().removeClass('active');
+            $('.js-tabber-container>.js-tabber-content>.js-part[data-type="'+$this.attr('data-type')+'"]').removeClass('hide').siblings().addClass('hide');
+        
+            document.body.scrollTop = fixedTop;
+            
+            // 同类商品
+            if($this.data('type') == 'similar' && !$this.data('loading')){
+                $this.data('loading', 1);
+                require(['goods_list'], function(gv){
+                    gv.start({
+                        url: '/h5/list/search?cat_id={$data.cat_id}&sort=rand',
+                        container: '.js-goods-list',
+                        size: 38
+                    }); 
+                });
+            }
+            return false;
+        });
+        
+        window.addEventListener('scroll', function(){
+            if(document.body.scrollTop > fixedTop){
+                $tabber.addClass('top-fix');
+            }else{
+                $tabber.removeClass('top-fix');
+            }
+        }, false);
+    });
+</script>
+</html>

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<include file="_layout/mall.head.html" />
+<literal>
+<style>
+.tabber.tabber-n4 button, .tabber.tabber-n5 a {width:20%;}
+.opt-btn{display:inline-block;margin-top:-6px;float:right}
+.opt-btn .btn {margin-left: 5px;}
+#order-list-container{margin-top:15px;padding-bottom: 15px;}
+.name-card.name-card-3col .sum-desc{margin-left:68px;position:relative;width:100%}
+.name-card.name-card-3col .sum-desc .pull-right{margin-right:-8px}
+.tabber{position:fixed;top:0;right:0;left:0;z-index:999}
+</style>
+</literal>
+</head>
+<body class="body-fixed">
+	<div class="container" style="padding-top:38px">
+		<div class="content clearfix ">
+			<div id="nav_order_status" class="tabber tabber-red tabber-n5 tabber-double-11 top-fix clearfix">
+				<a{$status=='all'? ' class="active"' : ''} href="#order_all" data-status="all">全部</a>
+				<a{$status=='topay'? ' class="active"' : ''} href="#order_topay" data-status="topay">待付款</a>
+				<a{$status=='tosend'? ' class="active"' : ''} href="#order_tosend" data-status="tosend">待发货</a>
+				<a{$status=='send'? ' class="active"' : ''} href="#order_send" data-status="send">待收货</a>
+				<a{$status=='refund'? ' class="active"' : ''} href="#order_refund" data-status="refund">退换货</a>
+			</div>
+			<div id="order-list-container">
+        		<div id="order_all">
+					<ul class="js-list b-list"></ul>
+        		</div>
+        		<div id="order_topay">
+					<ul class="js-list b-list"></ul>
+        		</div>
+        		<div id="order_tosend">
+					<ul class="js-list b-list"></ul>
+        		</div>
+        		<div id="order_send">
+					<ul class="js-list b-list"></ul>
+        		</div>
+        		<div id="order_success">
+					<ul class="js-list b-list"></ul>
+        		</div>
+        		<div id="order_cancel">
+					<ul class="js-list b-list"></ul>
+        		</div>
+        		<div id="order_refund">
+					<ul class="js-list b-list"></ul>
+        		</div>
+			</div>
+		</div>
+	</div>
+	<include file="_layout/mall.footer.html" />
+	<script type="text/javascript">
+	require(['view/order/list']);
+	</script>
+</body>
+</html>
